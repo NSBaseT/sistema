@@ -224,13 +224,13 @@ function abrirPopupListaAlunos(horarioConsulta, especialista, event) {
 
   // limpa conteúdo anterior
   lista.innerHTML = '';
-  titulo.innerText = `Especialista: ${especialista}`;
+  titulo.innerText = `Especialista: ${list.value}`;
 
   // filtrar alunos do mesmo horário
  // Pega o agendamento principal baseado no horário e especialista
 const agendamentoPrincipal = (window.todosAgendamentos || []).find(p =>
   p.Horario_da_consulta === horarioConsulta &&
-  p.Especialista === especialista &&
+  p.Especialista === list.value &&
   !p.Eh_Aluno
 );
 
@@ -244,7 +244,7 @@ const alunosMesmoHorario = agendamentoPrincipal
     )
   : (window.agendamentosAlunos || []).filter(p =>
       p.Horario_da_consulta === horarioConsulta &&
-      p.Especialista === especialista &&
+      p.Especialista === list.value &&
       p.Eh_Aluno === true 
     );
 
@@ -282,7 +282,7 @@ function filtrarAlunosNoIntervalo(horarioInicioPrincipal, horarioFimPrincipal, e
   const alunos = window.agendamentosAlunos || [];
 
   return alunos.filter(p => {
-    if (!p.Eh_Aluno || p.Especialista !== especialista) return false;
+    if (!p.Eh_Aluno || p.Especialista !== list.value) return false;
 
     // Ignora se os horários não sobrepõem
     return !(p.Horario_da_consulta >= horarioFimPrincipal || 
