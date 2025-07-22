@@ -283,7 +283,7 @@ function filtrarAlunosNoIntervalo(horarioInicioPrincipal, horarioFimPrincipal, e
 
   return alunos.filter(p => {
     if (!p.Eh_Aluno || p.Especialista !== list.value) return false;
-
+      
     // Ignora se os horários não sobrepõem
     return !(p.Horario_da_consulta >= horarioFimPrincipal || 
              p.Horario_de_Termino_da_consulta <= horarioInicioPrincipal);

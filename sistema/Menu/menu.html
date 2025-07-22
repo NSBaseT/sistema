@@ -175,28 +175,30 @@
 
   <div class="ajuda-form">
 
-    <label for="tela">Tela com problema:</label>
+    <label for="tela">Local da ocorrência:</label>
     <select id="tela">
       <option value="">Selecione</option>
-      <option value="Cadastro de paciente">Cadastro de paciente</option>
-      <option value="Fluxo de caixa">Fluxo de caixa</option>
+      <option value="Cadastro de paciente">Cadastro de Paciente</option>
+      <option value="Fluxo de caixa">Fluxo de Caixa</option>
       <option value="Agendamento">Agendamento</option>
-      <option value="Lista de consulta">Lista de consulta</option>
-      <option value="Lista de paciente">Lista de paciente</option>
+      <option value="Lista de consulta">Lista de Consulta</option>
+      <option value="Lista de paciente">Lista de Paciente</option>
       <option value="Chat">Chat</option>
       <option value="Perfil">Perfil</option>
     </select>
 
-    <label for="descricao">Descrição do problema:</label>
-    <textarea id="descricao" rows="4" placeholder="Descreva o problema..."></textarea>
+    <label for="descricao">Descrição:</label>
+    <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
 
     <button type="button" onclick="enviarAjuda()">Enviar</button>
   </div>
 
   <div class="ajuda-lista">
     <div class="lista-titulo">Minhas Solicitações</div>
-    <br>
-    <input type="text" id="filtroTicket" placeholder="Buscar por número do chamado..." />
+    <p>Buscar por:</p>
+    <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
+    <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
+    <input type="text" id="filtroData" placeholder="Data..." />
     <div id="listaMensagens">
       <!-- Mensagens aparecerão aqui -->
     </div>
