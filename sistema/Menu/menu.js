@@ -258,4 +258,59 @@ async function enviarAjuda() {
   }
 }
 
+let ajudasCache = new Map();
+
+async function buscarAjudas() {
+  try {
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Nome)}`);
+    if (!resp.ok) throw new Error("Erro ao buscar ajudas");
+    const dados = await resp.json();
+
+    // Verifica mudanças de status comparando com cache local
+    dados.forEach(item => {
+      const cacheItem = ajudasCache.get(item.id);
+
+      if (cacheItem && cacheItem.status !== item.status) {
+        // Status mudou! Mostrar notificação
+        mostrarNotificacaoStatus(item);
+      }
+
+      // Atualiza cache
+      ajudasCache.set(item.id, item);
+    });
+
+    // Atualiza a lista visível (se quiser)
+    // atualizarListaAjudaNaTela(dados);
+
+  } catch (err) {
+    console.error("Erro ao buscar ajudas no polling:", err);
+  }
+}
+
+function mostrarNotificacaoStatus(item) {
+  const agora = new Date();
+  const data = agora.toLocaleDateString('pt-BR');
+  const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
+
+  const ticket = item.id.split('-')[0];
+
+  // Cria um elemento simples de notificação (pode ser melhorado com libs)
+  const notif = document.createElement('div');
+  notif.className = 'notificacao-status';
+  notif.innerHTML = `
+    <strong>Chamado #${ticket}</strong> atualizado para <em>${item.status}</em><br>
+    <small>${data} ${hora}</small>
+  `;
+
+  // Adiciona no topo da página (ou onde quiser)
+  document.body.prepend(notif);
+
+  // Remove a notificação após 10 segundos
+  setTimeout(() => notif.remove(), 10000);
+}
+
+// Começa o polling a cada 10 segundos
+setInterval(buscarAjudas, 10000);
+buscarAjudas(); // chama imediatamente ao carregar
+
 

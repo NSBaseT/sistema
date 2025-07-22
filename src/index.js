@@ -559,39 +559,6 @@ app.get('/agendamentos', (req, res) => {
     });
 });
 
-
-
-
-
-
-
-//botao ajuda
-
-// app.post("/ajuda", async (req, res) => {
-//     try {
-//         const { tela, descricao } = req.body;
-
-//         if (!tela || !descricao) {
-//             return res.status(400).json({ error: "Campos obrigatórios: tela e descrição." });
-//         }
-
-//         const novaAjuda = await prisma.ajuda.create({
-//             data: {
-//                 tela,
-//                 descricao,
-//             }
-//         });
-
-//         res.status(201).json({
-//             message: "Solicitação registrada com sucesso.",
-//             ajuda: novaAjuda
-//         });
-//     } catch (error) {
-//         console.error("Erro ao registrar ajuda:", error);
-//         res.status(500).json({ error: "Erro interno ao salvar ajuda." });
-//     }
-// });
-
 app.post("/ajuda", async (req, res) => {
     try {
         const { tela, descricao, especialista } = req.body;
@@ -610,7 +577,7 @@ app.post("/ajuda", async (req, res) => {
         const id = nova.id;
         const ticket = id.split('-')[0]; // código curto
 
-        const base = "https://glorious-journey-5g475pg9gvjw3749q-3001.app.github.dev";
+        const base = "https://fantastic-giggle-v6p9v59v7r9xfwq94-3001.app.github.dev";
         const links = {
             Recebido: `${base}/ajuda/${id}/status/Recebido`,
             'Em Andamento': `${base}/ajuda/${id}/status/Em%20Andamento`,
