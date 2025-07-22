@@ -304,6 +304,7 @@ function mostrarNotificacaoStatus(item) {
   const notif = document.createElement('div');
   notif.className = `notificacao-status ${statusClasse}`;
   notif.innerHTML = `
+    NsBaseTech informa: <br>
     <strong>Chamado #${ticket}</strong> <br>
     atualizado para <em>${item.status}</em><br>
     <small>${data} ${hora}</small>
