@@ -294,23 +294,31 @@ function mostrarNotificacaoStatus(item) {
 
   const ticket = item.id.split('-')[0];
 
-  // Cria um elemento simples de notificação (pode ser melhorado com libs)
+  // Mapeia o status para a classe correta
+  let statusClasse = '';
+  if (item.status === 'Recebido') statusClasse = 'recebido';
+  else if (item.status === 'Em Andamento') statusClasse = 'andamento';
+  else if (item.status === 'Concluído') statusClasse = 'concluido';
+
+  // Cria a notificação
   const notif = document.createElement('div');
-  notif.className = 'notificacao-status';
+  notif.className = `notificacao-status ${statusClasse}`;
   notif.innerHTML = `
-    <strong>Chamado #${ticket}</strong> atualizado para <em>${item.status}</em><br>
+    <strong>Chamado #${ticket}</strong> <br>
+    atualizado para <em>${item.status}</em><br>
     <small>${data} ${hora}</small>
   `;
 
-  // Adiciona no topo da página (ou onde quiser)
   document.body.prepend(notif);
 
-  // Remove a notificação após 10 segundos
   setTimeout(() => notif.remove(), 10000);
 }
 
 // Começa o polling a cada 10 segundos
-setInterval(buscarAjudas, 10000);
+setInterval(buscarAjudas, 5000);
 buscarAjudas(); // chama imediatamente ao carregar
+
+
+
 
 
