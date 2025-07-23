@@ -735,6 +735,10 @@ dialog {
   background-color: rgb(18, 211, 195) !important;
 }
 
+.status-compareceu {
+  background-color: rgb(5, 141, 252) !important;
+}
+
 .campomenor {
   display: contents;
   width: 40%;
@@ -825,6 +829,34 @@ iframe {
   color: white;
 }
 
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    position: absolute;
+    top: -35px; /* Aparece acima do botão */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
 
 @media (min-width: 410px) and (max-width: 600px) {
   iframe {

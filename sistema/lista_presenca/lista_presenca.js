@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         itemsPresenca = await response.json();
 
         // Filtro: apenas status Confirmado
-        itemsPresenca = itemsPresenca.filter(item => item.Status_da_Consulta === "Confirmado");
+        itemsPresenca = itemsPresenca.filter(item => item.Status_da_Consulta === "Compareceu");
 
         // Filtros de data/mês/ano
         const filtroData = document.getElementById("filtroData").value;  // yyyy-mm-dd

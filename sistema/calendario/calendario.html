@@ -238,16 +238,21 @@
             <option value="-">Selecione um especialista</option>
         </select>
 
-        <button id="espera" onclick="AbrirEspera()"
-            style="padding: 8px; background: #0D87E9; border-radius: 8px; justify-content: center; align-items: center; display: flex">
-            <i class="ph ph-clock" style="color: white; height: full; width: full;"></i>
-        </button>
+        <div class="tooltip">
+            <button id="espera" onclick="AbrirEspera()"
+                style="padding: 8px; background: #0D87E9; border-radius: 8px; justify-content: center; align-items: center; display: flex">
+                <i class="ph ph-clock" style="color: white; height: full; width: full;"></i>
+            </button>
+            <span class="tooltip-text">Lista de Espera</span>
+        </div>
 
-        <button id="cancelado" onclick="AbrirCancelado()"
-            style="padding: 8px; background: #0D87E9; border-radius: 8px; justify-content: center; align-items: center; display: flex">
-            <i class="bi bi-list-check" style="color: white; height: full; width: full;"></i>
-        </button>
-
+        <div class="tooltip">
+            <button id="cancelado" onclick="AbrirCancelado()"
+                style="padding: 8px; background: #0D87E9; border-radius: 8px; justify-content: center; align-items: center; display: flex">
+                <i class="bi bi-list-check" style="color: white; height: full; width: full;"></i>
+            </button>
+            <span class="tooltip-text">Lista de Consulta</span>
+        </div>
         <button id="agendamento" class="novoagendamento">
             <i class="ph ph-plus" style="color: white;"></i>
             <div class="escritaN" style="font-family: Nunito;">

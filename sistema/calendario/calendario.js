@@ -535,11 +535,13 @@ const tipoDoStatusc1 = "(nenhum)"
 const tipoDoStatusc2 = "Confirmado"
 const tipoDoStatusc3 = "Aguardando Confirmação"
 const tipoDoStatusc4 = "Cancelado"
+const tipoDoStatusc5 = "Compareceu"
 
 statusc.innerHTML += `<option>${tipoDoStatusc1}</option>`;
 statusc.innerHTML += `<option>${tipoDoStatusc2}</option>`;
 statusc.innerHTML += `<option>${tipoDoStatusc3}</option>`;
 statusc.innerHTML += `<option>${tipoDoStatusc4}</option>`;
+statusc.innerHTML += `<option>${tipoDoStatusc5}</option>`;
 
 ; (async () => {
     const response = await fetch('/pacientes')
