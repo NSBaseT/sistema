@@ -171,9 +171,9 @@ ajudaBtn.addEventListener('click', async () => {
     <strong>Local da ocorrência: ${item.tela}</strong>
   <p>${item.descricao}</p>
   <div class="botoes-status">
-    <button class="recebido ${item.status === 'Recebido' ? 'ativo' : ''}">Recebido</button>
-    <button class="andamento ${item.status === 'Em Andamento' ? 'ativo' : ''}">Em Andamento</button>
-    <button class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
+    <button type="button" disabled class="recebido ${item.status === 'Recebido' ? 'ativo' : ''}">Recebido</button>
+    <button type="button" disabled class="andamento ${item.status === 'Em Andamento' ? 'ativo' : ''}">Em Andamento</button>
+    <button type="button" disabled class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
   </div>
 `;
 
