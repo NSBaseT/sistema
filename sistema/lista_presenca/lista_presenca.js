@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${dataFormatada}</td>
             <td>${item.Horario_da_consulta}</td>
             <td>${item.Horario_de_Termino_da_consulta}</td>
-            <td>${item.Status_da_Consulta === "Confirmado" ? "Presente" : item.Status_da_Consulta}</td>
+            <td>${item.Status_da_Consulta === "Compareceu" ? "Presente" : item.Status_da_Consulta}</td>
             
             <td class="columnAction">
                 <button type="button" onclick='showModal(${JSON.stringify(item)})'>
