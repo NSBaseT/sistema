@@ -307,12 +307,19 @@ function mostrarNotificacaoStatus(item) {
     NsBaseTech informa: <br>
     <strong>Chamado #${ticket}</strong> <br>
     atualizado para <em>${item.status}</em><br>
-    <small>${data} ${hora}</small>
+    <small>${data} ${hora}</small><br>
+
+    <button class="btn-ok" style="align-items:center";>OK</button>
   `;
+
+  // Adiciona evento ao botão OK para remover a notificação
+  const btnOk = notif.querySelector('.btn-ok');
+  btnOk.addEventListener('click', () => {
+    notif.remove();
+  });
 
   document.body.prepend(notif);
 
-  setTimeout(() => notif.remove(), 10000);
 }
 
 // Começa o polling a cada 10 segundos
