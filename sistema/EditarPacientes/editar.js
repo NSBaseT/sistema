@@ -251,12 +251,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-//botao ajuda
 
+
+//botao ajuda
+let Usuario = ""
 const ajudaBtn = document.getElementById('ajudaBtn');
 const ajudaPopup = document.getElementById('ajudaPopup');
 const listaMensagens = document.getElementById('listaMensagens');
-
+const Especialista = Usuario
 // Fecha o popup ao carregar a página
 window.addEventListener('load', () => {
   ajudaPopup.style.display = 'none';
@@ -265,13 +267,10 @@ window.addEventListener('load', () => {
 
 // Abre o popup e carrega as solicitações do backend
 ajudaBtn.addEventListener('click', async () => {
-  if (list.value === "-") {
-        alert("Selecione o Especialista");
-    } else {
-  ajudaPopup.style.display = 'flex';
-    }
+   ajudaPopup.style.display = 'flex';
+    
   try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(list.value)}`);
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
     if (!resp.ok) throw new Error("Falha ao buscar ajudas");
     const dados = await resp.json();
 
@@ -383,7 +382,7 @@ let ajudasCache = new Map();
 
 async function buscarAjudas() {
   try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(list.value)}`);
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
     if (!resp.ok) throw new Error("Erro ao buscar ajudas");
     const dados = await resp.json();
 

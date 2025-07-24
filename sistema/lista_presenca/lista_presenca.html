@@ -75,6 +75,12 @@
                     <i class="bi bi-instagram"></i><span style="margin-left: 5px;"></span>@ns_basetech </a>
             </div>
 
+<div>
+            <!-- Botão flutuante -->
+            <button id="ajudaBtn" title="Ajuda">
+                <i class="bi bi-question-circle"></i>
+            </button>
+        </div>
 
         </main>
         <label class="switch">
@@ -165,6 +171,44 @@
 
 
     </div>
+
+ <!-- Popup de ajuda -->
+                <div id="ajudaPopup" style="display: none;">
+                    <div class="popup-fechar" onclick="fecharAjuda()">×</div>
+
+                    <div class="ajuda-form">
+
+                        <label for="tela">Local da ocorrência:</label>
+                        <select id="tela">
+                            <option value="">Selecione</option>
+                            <option value="Cadastro de paciente">Cadastro de Paciente</option>
+                            <option value="Fluxo de caixa">Fluxo de Caixa</option>
+                            <option value="Agendamento">Agendamento</option>
+                            <option value="Lista de consulta">Lista de Consulta</option>
+                            <option value="Lista de paciente">Lista de Paciente</option>
+                            <option value="Chat">Chat</option>
+                            <option value="Perfil">Perfil</option>
+                        </select>
+
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
+
+                        <button type="button" onclick="enviarAjuda()">Enviar</button>
+                    </div>
+
+                    <div class="ajuda-lista">
+                        <div class="lista-titulo">Minhas Solicitações</div>
+                        <p>Buscar por:</p>
+                        <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
+                        <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
+                        <input type="text" id="filtroData" placeholder="Data..." />
+                        <div id="listaMensagens">
+                            <!-- Mensagens aparecerão aqui -->
+                        </div>
+                    </div>
+                </div>
+
+
     <script src="../global/auth.js"></script>
     <script type="text/javascript" src="lista_presenca.js"></script>
 
