@@ -1338,222 +1338,200 @@ document.getElementById("open-chat-btn1").addEventListener("click", () => {
     window.location.href = '../chat/chat.html'
  })
  
+//botao ajuda
+
+const ajudaBtn = document.getElementById('ajudaBtn');
+const ajudaPopup = document.getElementById('ajudaPopup');
+const listaMensagens = document.getElementById('listaMensagens');
+
+// Fecha o popup ao carregar a página
+window.addEventListener('load', () => {
+  ajudaPopup.style.display = 'none';
+});
+
+// Abre o popup e carrega as solicitações do backend
+ajudaBtn.addEventListener('click', async () => {
+  if (list.value === "-") {
+        alert("Selecione o Especialista");
+    } else {
+  ajudaPopup.style.display = 'flex';
+    }
+
+  try {
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(list.value)}`);
+    if (!resp.ok) throw new Error("Falha ao buscar ajudas");
+    const dados = await resp.json();
+
+    listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
+
+    dados.forEach(item => {
+      const agora = new Date(item.criadoEm);
+      const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
+      const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
+
+      const div = document.createElement('div');
+      div.classList.add('mensagem');
+      div.dataset.id = item.id; // útil pra atualizações futuras
+
+      div.innerHTML = `
+  <p><strong>Chamado #${item.ticket}</strong>
+     <strong> Data: ${data} Hora: ${hora}</strong>
+    <strong>Local da ocorrência: ${item.tela}</strong>
+  <p>${item.descricao}</p>
+  <div class="botoes-status">
+    <button type="button" disabled class="recebido ${item.status === 'Recebido' ? 'ativo' : ''}">Recebido</button>
+    <button type="button" disabled class="andamento ${item.status === 'Em Andamento' ? 'ativo' : ''}">Em Andamento</button>
+    <button type="button" disabled class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
+  </div>
+`;
+
+      div.querySelectorAll('.botoes-status button').forEach(botao => {
+        botao.addEventListener('click', () => {
+          div.querySelectorAll('.botoes-status button').forEach(b => b.classList.remove('ativo'));
+          botao.classList.add('ativo');
+          // Aqui você pode enviar um PUT para atualizar o status no backend
+        });
+      });
+
+      listaMensagens.appendChild(div);
+    });
+
+    const inputFiltroTicket = document.getElementById("filtroTicket");
+    const inputFiltroData = document.getElementById("filtroData");
+    const inputFiltroTela = document.getElementById("filtroTela");
+
+    function aplicarFiltros() {
+      const termoTicket = inputFiltroTicket.value.trim().toLowerCase();
+      const termoData = inputFiltroData.value.trim().toLowerCase();
+      const termoTela = inputFiltroTela.value.trim().toLowerCase();
+
+      document.querySelectorAll(".mensagem").forEach(div => {
+        const texto = div.innerText.toLowerCase();
+
+        const matchTicket = !termoTicket || texto.includes(termoTicket);
+        const matchData = !termoData || texto.includes(termoData);
+        const matchTela = !termoTela || texto.includes(termoTela);
+
+        div.style.display = matchTicket && matchData && matchTela ? "block" : "none";
+      });
+    }
+
+    inputFiltroTicket.addEventListener("input", aplicarFiltros);
+    inputFiltroData.addEventListener("input", aplicarFiltros);
+    inputFiltroTela.addEventListener("input", aplicarFiltros);
 
 
- //ALUNOS
-
-// document.getElementById('alunos').addEventListener('click', () => {
-//     if (list.value === "-") {
-//         alert("Selecione o Especialista")
-//         return
-//     }
-
-//     pacientesFiltrados = todosPacientes.filter(({ Especialista }) => Especialista === list.value)
-//     age_name.disabled = false
-//     document.getElementById("btn-start-atendimento").style = "display:none"
-
-//     nameinp.innerHTML = ''
-//     pacientesFiltrados.forEach(item => {
-//         nameinp.innerHTML += `<option value="${item.id}">${item.Nome}</option>`
-//     })
-
-//     document.getElementById("formalunos").dataset.alunosid = "0";
-//     nameinp.value = "" // A escrita antes do : tem que ta igual ao campo que foi criado no prisma
-//     phoneinp.value = ""
-//     data_atendimentoinp.value = ""
-//     horario_consultainp.value = ""
-//     horariot_consultainp.value = ""
-//     valor_consultainpinp.value = ""
-//     status_consultainp.value = ""
-//     status_pagamentoinp.value = ""
-//     observacaoinp.value = ""
-//     id_alunos.value = ""
-//     modAlunos.showModal()
-// });
-
-// document.getElementById('btn-close1').addEventListener('click', () => {
-
-//     modAlunos.close()
-// })
-
-// document.getElementById("btn_voltar_al").addEventListener("click", () => {
-//     window.location.href = '../Menu/menu.html'
-// })
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao carregar solicitações de ajuda.");
+  }
+});
 
 
-// nameinp = document.getElementById("age_name") //O getElementById tem que ser igual o id
-// phoneinp = document.getElementById("phone")
-// data_atendimentoinp = document.getElementById("data_atendimento")
-// horario_consultainp = document.getElementById("horario_consulta")
-// horariot_consultainp = document.getElementById("horariot_consulta")
-// valor_consultainpinp = document.getElementById("valor_consulta")
-// status_consultainp = document.getElementById("status_c")
-// status_pagamentoinp = document.getElementById("status_pagamento")
-// observacaoinp = document.getElementById("observacao")
-// const id_alunos = document.getElementById("id_alunos")
+function fecharAjuda() {
+  ajudaPopup.style.display = 'none';
+}
 
-// function atualizaTelefone() {
-//     const paciente = pacientesFiltrados.find(paciente => paciente.id === nameinp.value)
-//     phoneinp.value = paciente.Telefone
-// }
+async function enviarAjuda() {
+  const tela = document.getElementById('tela').value;
+  const descricao = document.getElementById('descricao').value;
+
+  if (!tela || !descricao.trim()) {
+    alert('Preencha todos os campos!');
+    return;
+  }
+
+  try {
+    const response = await fetch("/ajuda", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tela,
+        descricao,
+        especialista: Nome // <-- enviar nome do especialista logado
+      })
+    });
+
+    if (!response.ok) throw new Error("Erro ao enviar ajuda");
+
+    ajudaBtn.click();
+    document.getElementById('descricao').value = '';
+    document.getElementById('tela').selectedIndex = 0;
+
+    alert('Ajuda enviada com sucesso!');
+    fecharAjuda();
+  } catch (error) {
+    console.error(error);
+    alert('Erro ao enviar ajuda. Tente novamente.');
+  }
+}
+
+let ajudasCache = new Map();
+
+async function buscarAjudas() {
+  try {
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(list.value)}`);
+    if (!resp.ok) throw new Error("Erro ao buscar ajudas");
+    const dados = await resp.json();
+
+    // Verifica mudanças de status comparando com cache local
+    dados.forEach(item => {
+      const cacheItem = ajudasCache.get(item.id);
+
+      if (cacheItem && cacheItem.status !== item.status) {
+        // Status mudou! Mostrar notificação
+        mostrarNotificacaoStatus(item);
+      }
+
+      // Atualiza cache
+      ajudasCache.set(item.id, item);
+    });
+
+    // Atualiza a lista visível (se quiser)
+    // atualizarListaAjudaNaTela(dados);
+
+  } catch (err) {
+    console.error("Erro ao buscar ajudas no polling:", err);
+  }
+}
+
+function mostrarNotificacaoStatus(item) {
+  const agora = new Date();
+  const data = agora.toLocaleDateString('pt-BR');
+  const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
+
+  const ticket = item.id.split('-')[0];
+
+  // Mapeia o status para a classe correta
+  let statusClasse = '';
+  if (item.status === 'Recebido') statusClasse = 'recebido';
+  else if (item.status === 'Em Andamento') statusClasse = 'andamento';
+  else if (item.status === 'Concluído') statusClasse = 'concluido';
+
+  // Cria a notificação
+  const notif = document.createElement('div');
+  notif.className = `notificacao-status ${statusClasse}`;
+  notif.innerHTML = `
+    NsBaseTech informa: <br>
+    <strong>Chamado #${ticket}</strong> <br>
+    atualizado para <em>${item.status}</em><br>
+    <small>${data} ${hora}</small><br>
+
+    <button class="btn-ok" style="align-items:center";>OK</button>
+  `;
+
+  // Adiciona evento ao botão OK para remover a notificação
+  const btnOk = notif.querySelector('.btn-ok');
+  btnOk.addEventListener('click', () => {
+    notif.remove();
+  });
+
+  document.body.prepend(notif);
+
+}
+
+// Começa o polling a cada 10 segundos
+setInterval(buscarAjudas, 5000);
+buscarAjudas(); // chama imediatamente ao carregar
 
 
-// function calculadata() {
-
-//     var repeticoes = parseInt(document.getElementById("repeticoes").value);
-//     var tipo = document.getElementById("periodo").value;
-//     var periodo = 0;
-//     var dataBrasileira = document.getElementById("data_atendimento").value;
-
-
-//     switch (tipo) {
-//         case "semanal":
-//             periodo = 7;
-//             break;
-//         case "quinzenal":
-//             periodo = valorQuinzenal;
-//             break;
-//         case "mensal":
-//             periodo = 30;
-//             break;
-//         case "anual":
-//             periodo = 365;
-//             break;
-//         default:
-//             periodo = 0;
-//             break;
-//     }
-//     var texto = "";
-//     var arrayData = [];
-
-//     for (var i = 1; i <= repeticoes; i++) {
-//         var data = new Date(dataBrasileira);
-//         data.setDate(data.getDate() + i * periodo)
-//         arrayData.push(data);
-//     }
-//     return arrayData;
-// }
-
-// document.getElementById('mostrarSubform').addEventListener('change', function () {
-//     var subform = document.getElementById('subform');
-//     subform.style.display = this.checked ? 'block' : 'none';
-// });
-
-// document.getElementById('valor_consulta').addEventListener('input', function() {
-//     let valor = this.value.replace(/\D/g, ''); // Remove tudo que não é número
-
-//     if (valor.length > 0) {
-//         // Divide o valor por 100 para adicionar os centavos
-//         valor = (parseFloat(valor) / 100).toFixed(2);
-//     }
-
-//     // Atualiza o campo com o valor formatado como número (sem "R$")
-//     this.value = valor;
-// });
-
-
-// function converterDataFormatoBrasileiroParaISO(data) {
-//     var partes = data.split("/");
-//     return partes[2] + "-" + partes[1] + "-" + partes[0];
-// }
-
-// function alunos(event) {
-//     event.preventDefault();
-    
-
-//     const form = document.getElementById("formalunos");
-//     const { alunosid: alunosId } = form.dataset;
-
-//     const inputs = {
-//         nome: nameinp.value,
-//         telefone: phoneinp.value,
-//         especialista: list.value,
-//         dataAtendimento: data_atendimentoinp.value,
-//         horarioConsulta: horario_consultainp.value,
-//         horarioTerminoConsulta: horariot_consultainp.value,
-//         valorConsulta: Number(valor_consultainpinp.value),
-//         statusConsulta: status_consultainp.value,
-//         statusPagamento: status_pagamentoinp.value,
-//         observacao: observacaoinp.value
-//     };
-
-//     const clearInputs = () => {
-//         nameinp.value = "";
-//         phoneinp.value = "";
-//         data_atendimentoinp.value = "";
-//         horario_consultainp.value = "";
-//         horariot_consultainp.value = "";
-//         valor_consultainpinp.value = "";
-//         status_consultainp.value = "";
-//         status_pagamentoinp.value = "";
-//         observacaoinp.value = "";
-//     };
-
-    
-
-//     let alertShown = false;
-
-// const createAppointment = (data) => {
-//     fetch("/agendamento", {
-//         method: "POST",
-//         body: JSON.stringify(data),
-//         headers: {
-//             "Content-Type": "application/json"
-//         }
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (!alertShown) {
-//             alert("Paciente Agendado com sucesso!");
-//             alertShown = true;  // Defina a flag para evitar alertas futuros
-//         }
-//         clearInputs();
-//         carregarLista(true).catch(console.error);
-//     })
-//     .catch(() => {
-//         if (!alertShown) {
-//             alert("Erro ao Agendar");
-//             alertShown = true;  // Defina a flag para evitar alertas futuros
-//         }
-//     });
-// };
-
-//     const updateAppointment = (data) => {
-//         // Verifica se o status da consulta é "Cancelado" e o status do pagamento é "Pago"
-//         if (data.Status_da_Consulta === "Cancelado" && data.Status_do_pagamento === "Pago") {
-//             alert("Altere o Status do pagamento para 'Pendente' ou 'Cancelado' antes de atualizar.");
-//             return; // Interrompe a execução se as condições forem atendidas
-//         }
-    
-//         // Prossegue com a atualização do agendamento se as condições não forem atendidas
-//         fetch("/agendamento", {
-//             method: "PUT",
-//             body: JSON.stringify(data),
-//             headers: {
-//                 "Content-Type": "application/json"
-//             }
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             alert("Paciente Atualizado com sucesso!");
-//             carregarLista(true).catch(console.error);
-           
-//         })
-       
-//         .catch(() => alert("Erro ao atualizar"));
-       
-//     };
-//      const appointmentData = {
-//         Nome: inputs.nome,
-//         Telefone: inputs.telefone,
-//         Especialista: inputs.especialista,
-//         Data_do_Atendimento: inputs.dataAtendimento,
-//         Horario_da_consulta: inputs.horarioConsulta,
-//         Horario_de_Termino_da_consulta: inputs.horarioTerminoConsulta,
-//         Valor_da_Consulta: inputs.valorConsulta,
-//         Status_da_Consulta: inputs.statusConsulta,
-//         Status_do_pagamento: inputs.statusPagamento,
-//         observacao: inputs.observacao
-//     };
-
-// }

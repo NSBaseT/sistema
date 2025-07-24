@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="cadastro_prof.css">
     <link rel="shortcut icon" href="../Logo/LOGO_02_DEGRADE.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../chat/chat.css"> 
-     <iframe class="unstyled" id="draggable-container"
-        src="https://glorious-journey-5g475pg9gvjw3749q-3001.app.github.dev/sistema/chat/chat.html" height="50"; width="50" ></iframe>
+    <link rel="stylesheet" href="../chat/chat.css">
+    <iframe class="unstyled" id="draggable-container"
+        src="https://glorious-journey-5g475pg9gvjw3749q-3001.app.github.dev/sistema/chat/chat.html" height="50" ;
+        width="50"></iframe>
 
     <title>Cadastro do Profissional</title>
 </head>
@@ -25,10 +26,11 @@
 
                         <div id="meuUsuario"
                             style="flex: 1 1 0; color: white; font-size: 16px; font-family: Nunito; font-weight: 400; word-wrap: break-word">
-                            <i style="font-size:large; align-items: center; " class="bi bi-person-square"></i> 
+                            <i style="font-size:large; align-items: center; " class="bi bi-person-square"></i>
                             <br>
                             <p style="text-align: center;" id="userGreeting"></p>
-                            <h4 style="font-size: xx-small;margin: 0; color: aqua; text-align: center;">Editar perfil</h4>
+                            <h4 style="font-size: xx-small;margin: 0; color: aqua; text-align: center;">Editar perfil
+                            </h4>
                         </div>
                 </h1>
 
@@ -60,69 +62,115 @@
             </div>
 
             <div class="contato">
-                <div > Contato </div>
-              
-        
-              <div>
-                <a  href="https://wa.me/message/6JNNR37HJXYQM1">
-                  <i class="bi bi-whatsapp"></i><span>
-                  </span>(19) 98149-4345</a>
-              </div>
-        
-              <div>
-                <a  href="https://www.instagram.com/ns_basetech?igsh=eXZ6aDl4dWt5NmRj">
-                  <i class="bi bi-instagram"></i><span style="margin-left: 5px;"></span>@ns_basetech </a>
-              </div>
-            </div>
+                <div> Contato </div>
 
+
+                <div>
+                    <a href="https://wa.me/message/6JNNR37HJXYQM1">
+                        <i class="bi bi-whatsapp"></i><span>
+                        </span>(19) 98149-4345</a>
+                </div>
+
+                <div>
+                    <a href="https://www.instagram.com/ns_basetech?igsh=eXZ6aDl4dWt5NmRj">
+                        <i class="bi bi-instagram"></i><span style="margin-left: 5px;"></span>@ns_basetech </a>
+                </div>
+            </div>
+            <div>
+                <!-- Botão flutuante -->
+                <button id="ajudaBtn" title="Ajuda">
+                    <i class="bi bi-question-circle"></i>
+                </button>
+            </div>
         </main>
         <label class="switch">
             <input type="checkbox" id="ch-side">
             <span class="slider"></span>
         </label>
     </div>
-    
+
 
     <div class="container">
         <div class="heading">Cadastro do Profissional</div> <br>
-        
+
         <div class="NS"><b>NS BaseTech</b></div>
         <div class="hr-customizado"></div>
-    
-    
-    <form onsubmit="cadastro_prof(event)" class="form">
 
-        <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_pr">
-        <select style="padding: 8px; background: white; border-radius: 8px" id="lista">
-            <option value="-">Selecione um especialista</option>
-        </select>
 
-        <input class="input" type="NAME" name="name" id="nameprof" placeholder="Nome">
-<br>
-        <br>
-        Faixa Etária de Atendimento<input class="input" type="text" name="faixa_etaria" id="faixa_etaria" placeholder="Faixa Etária de Atendimento">
-       <br>
-        <br>
-        Dias de Atendimento<input class="input" type="text" name="data_atendimento" id="data_atend" placeholder="Dias de Atendimento"> 
-    <br>    
-        <br>
-        Horários de Atendimento<input class="input" type="text" name="horario_atendimento" id="horario_atend" placeholder="Horários de Atendimento"> 
-      <br>
-        <br>
-        Especialidade<input class="input" type="text" name="especialidade" id="especialidade" placeholder="Especialidade">
-      <br>
-        <br>
-        Registro do Profissional<input class="input" type="text" name="reg_profissional" id="reg_profissional" placeholder="Registro do Profissional"> 
-      
-     
-        <input class="voltar-button" type="submit" value="Enviar" id="btn_enviar_cadprof">
+        <form onsubmit="cadastro_prof(event)" class="form">
 
-    </form>
-</div>
+            <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_pr">
+            <select style="padding: 8px; background: white; border-radius: 8px" id="lista">
+                <option value="-">Selecione um especialista</option>
+            </select>
 
-<script src="../global/auth.js"></script>
-<script type="text/javascript" src="cadastro_prof.js"></script>
-<script src="../chat/chat.js"></script>
+            <input class="input" type="NAME" name="name" id="nameprof" placeholder="Nome">
+            <br>
+            <br>
+            Faixa Etária de Atendimento<input class="input" type="text" name="faixa_etaria" id="faixa_etaria"
+                placeholder="Faixa Etária de Atendimento">
+            <br>
+            <br>
+            Dias de Atendimento<input class="input" type="text" name="data_atendimento" id="data_atend"
+                placeholder="Dias de Atendimento">
+            <br>
+            <br>
+            Horários de Atendimento<input class="input" type="text" name="horario_atendimento" id="horario_atend"
+                placeholder="Horários de Atendimento">
+            <br>
+            <br>
+            Especialidade<input class="input" type="text" name="especialidade" id="especialidade"
+                placeholder="Especialidade">
+            <br>
+            <br>
+            Registro do Profissional<input class="input" type="text" name="reg_profissional" id="reg_profissional"
+                placeholder="Registro do Profissional">
+
+
+            <input class="voltar-button" type="submit" value="Enviar" id="btn_enviar_cadprof">
+
+        </form>
+    </div>
+
+    <!-- Popup de ajuda -->
+    <div id="ajudaPopup" style="display: none;">
+        <div class="popup-fechar" onclick="fecharAjuda()">×</div>
+
+        <div class="ajuda-form">
+
+            <label for="tela">Local da ocorrência:</label>
+            <select id="tela">
+                <option value="">Selecione</option>
+                <option value="Cadastro de paciente">Cadastro de Paciente</option>
+                <option value="Fluxo de caixa">Fluxo de Caixa</option>
+                <option value="Agendamento">Agendamento</option>
+                <option value="Lista de consulta">Lista de Consulta</option>
+                <option value="Lista de paciente">Lista de Paciente</option>
+                <option value="Chat">Chat</option>
+                <option value="Perfil">Perfil</option>
+            </select>
+
+            <label for="descricao">Descrição:</label>
+            <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
+
+            <button type="button" onclick="enviarAjuda()">Enviar</button>
+        </div>
+
+        <div class="ajuda-lista">
+            <div class="lista-titulo">Minhas Solicitações</div>
+            <p>Buscar por:</p>
+            <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
+            <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
+            <input type="text" id="filtroData" placeholder="Data..." />
+            <div id="listaMensagens">
+                <!-- Mensagens aparecerão aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../global/auth.js"></script>
+    <script type="text/javascript" src="cadastro_prof.js"></script>
+    <script src="../chat/chat.js"></script>
 
 </body>
 

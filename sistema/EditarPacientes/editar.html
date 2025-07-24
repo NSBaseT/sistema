@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="switch.css">
     <link rel="shortcut icon" href="../Logo/LOGO_02_DEGRADE.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../chat/chat.css"> 
-   <iframe class="unstyled" id="draggable-container"
-        src="https://glorious-journey-5g475pg9gvjw3749q-3001.app.github.dev/sistema/chat/chat.html" height="50"; width="50" ></iframe>
+    <link rel="stylesheet" href="../chat/chat.css">
+    <iframe class="unstyled" id="draggable-container"
+        src="https://glorious-journey-5g475pg9gvjw3749q-3001.app.github.dev/sistema/chat/chat.html" height="50" ;
+        width="50"></iframe>
 
     <style>
         /* Oculta o subformulário por padrão */
@@ -26,7 +27,7 @@
 </head>
 
 <body>
-    
+
     <div class="switch-container1">
         <main class="off" id="main-side">
             <div class="escrita1">
@@ -35,10 +36,11 @@
 
                         <div id="meuUsuario"
                             style="flex: 1 1 0; color: white; font-size: 16px; font-family: Nunito; font-weight: 400; word-wrap: break-word">
-                            <i style="font-size:large; align-items: center; " class="bi bi-person-square"></i> 
+                            <i style="font-size:large; align-items: center; " class="bi bi-person-square"></i>
                             <br>
                             <p style="text-align: center;" id="userGreeting"></p>
-                            <h4 style="font-size: xx-small;margin: 0; color: aqua; text-align: center;">Editar perfil</h4>
+                            <h4 style="font-size: xx-small;margin: 0; color: aqua; text-align: center;">Editar perfil
+                            </h4>
                         </div>
                 </h1>
 
@@ -83,7 +85,12 @@
                 <a class="contato" href="https://www.instagram.com/ns_basetech?igsh=eXZ6aDl4dWt5NmRj">
                     <i class="bi bi-instagram"></i><span style="margin-left: 5px;"></span>@ns_basetech </a>
             </div>
-
+            <div>
+                <!-- Botão flutuante -->
+                <button id="ajudaBtn" title="Ajuda">
+                    <i class="bi bi-question-circle"></i>
+                </button>
+            </div>
 
         </main>
         <label class="switch">
@@ -92,63 +99,95 @@
         </label>
     </div>
 
-<div class="container">
+    <div class="container">
 
-    <div class="heading">Editar Cadastro de Pacientes</div>
-    <br>
+        <div class="heading">Editar Cadastro de Pacientes</div>
+        <br>
 
-    <div class="NS"><b>NS BaseTech</b></div>
-    <div class="hr-customizado"></div>
+        <div class="NS"><b>NS BaseTech</b></div>
+        <div class="hr-customizado"></div>
 
-    <form onsubmit="cadastrar_paciente(event)" class="form">
-        <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_ed"></input>
+        <form onsubmit="cadastrar_paciente(event)" class="form">
+            <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_ed"></input>
 
-        <select style="padding: 8px; background: white; border-radius: 8px" id="lista">
-            <option value="-">Selecione um especialista</option>
-        </select>
+            <select style="padding: 8px; background: white; border-radius: 8px" id="lista">
+                <option value="-">Selecione um especialista</option>
+            </select>
 
-        <input class="input" name="name" id="name" placeholder="Nome"></input>
-        <input class="input" name="phone" id="phone" placeholder="Telefone">
-        <input class="input" name="email" id="email" placeholder="E-mail"></input>
-        <br><br> Data de Nascimento &nbsp; <input class="input" type="date" name="nasc" id="nasc"> </input>
-        <input class="input" name="cep" id="cep" placeholder="CEP" onchange="consultarCEP(this.value)"></input>
-        <input class="input" name="address" id="address" placeholder="Endereço"></input>
-        <input class="input" type="NUMBER" name="number" id="number" placeholder="Numero"></input>
-        <input class="input" name="cidade" id="cidade" placeholder="Cidade"></input>
-        <input class="input" name="estado" id="estado" placeholder="Estado"></input>
-        <input class="input" type="text" name="cpf_cnpj" id="cpf_cnpj" placeholder="CPF/CNPJ"
-            pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
-        </input>
+            <input class="input" name="name" id="name" placeholder="Nome"></input>
+            <input class="input" name="phone" id="phone" placeholder="Telefone">
+            <input class="input" name="email" id="email" placeholder="E-mail"></input>
+            <br><br> Data de Nascimento &nbsp; <input class="input" type="date" name="nasc" id="nasc"> </input>
+            <input class="input" name="cep" id="cep" placeholder="CEP" onchange="consultarCEP(this.value)"></input>
+            <input class="input" name="address" id="address" placeholder="Endereço"></input>
+            <input class="input" type="NUMBER" name="number" id="number" placeholder="Numero"></input>
+            <input class="input" name="cidade" id="cidade" placeholder="Cidade"></input>
+            <input class="input" name="estado" id="estado" placeholder="Estado"></input>
+            <input class="input" type="text" name="cpf_cnpj" id="cpf_cnpj" placeholder="CPF/CNPJ"
+                pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
+            </input>
 
 
-        <div>
-            <input style="margin-top:5%;" type="checkbox" id="mostrarSubformi"> É criança?</input>
-            <form>
-                
-                
+            <div>
+                <input style="margin-top:5%;" type="checkbox" id="mostrarSubformi"> É criança?</input>
+                <form>
+
+
                     <div id="subformi">
-                        
-                        <input class="input" name="name" id="namepai"
-                            placeholder="Nome do Pai ou Responsavel"></input>
+
+                        <input class="input" name="name" id="namepai" placeholder="Nome do Pai ou Responsavel"></input>
                         <input class="input" name="phone" id="phonepai" placeholder="Telefone Pai"></input>
-                        <input class="input" name="name" id="namemae"
-                            placeholder="Nome da Mãe ou Responsavel"></input>
+                        <input class="input" name="name" id="namemae" placeholder="Nome da Mãe ou Responsavel"></input>
                         <input class="input" name="phone" id="phonemae" placeholder="Telefone Mãe"></input>
                     </div>
 
-                    <input class="login-button" type="submit" value="CADASTRAR" id="btn_cadastrar"></input>  
-            </form>
-          
-
-            <button  onclick="toggleChat()" class="open-chat-btn1" id="open-chat-btn1" type="button">
-                <i class="bi bi-chat-dots"></i>
-            </button>
+                    <input class="login-button" type="submit" value="CADASTRAR" id="btn_cadastrar"></input>
+                </form>
 
 
+                <button onclick="toggleChat()" class="open-chat-btn1" id="open-chat-btn1" type="button">
+                    <i class="bi bi-chat-dots"></i>
+                </button>
 
-<script src="../global/auth.js"></script>
-<script type="text/javascript" src="editar.js"></script>
-<script src="../chat/chat.js"></script>
+                <!-- Popup de ajuda -->
+                <div id="ajudaPopup" style="display: none;">
+                    <div class="popup-fechar" onclick="fecharAjuda()">×</div>
+
+                    <div class="ajuda-form">
+
+                        <label for="tela">Local da ocorrência:</label>
+                        <select id="tela">
+                            <option value="">Selecione</option>
+                            <option value="Cadastro de paciente">Cadastro de Paciente</option>
+                            <option value="Fluxo de caixa">Fluxo de Caixa</option>
+                            <option value="Agendamento">Agendamento</option>
+                            <option value="Lista de consulta">Lista de Consulta</option>
+                            <option value="Lista de paciente">Lista de Paciente</option>
+                            <option value="Chat">Chat</option>
+                            <option value="Perfil">Perfil</option>
+                        </select>
+
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
+
+                        <button type="button" onclick="enviarAjuda()">Enviar</button>
+                    </div>
+
+                    <div class="ajuda-lista">
+                        <div class="lista-titulo">Minhas Solicitações</div>
+                        <p>Buscar por:</p>
+                        <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
+                        <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
+                        <input type="text" id="filtroData" placeholder="Data..." />
+                        <div id="listaMensagens">
+                            <!-- Mensagens aparecerão aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <script src="../global/auth.js"></script>
+                <script type="text/javascript" src="editar.js"></script>
+                <script src="../chat/chat.js"></script>
 
 </body>
 
