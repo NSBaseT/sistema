@@ -179,11 +179,12 @@ if (data.Secretaria) {
 
 } else {
   Usuario = data.Usuario;
-  NomeSaudacao = data.Usuario;
+  Nome = data.Nome;
+  NomeSaudacao = data.Nome;
 
   const tituloFluxo = document.getElementById("tituloFluxo");
   if (tituloFluxo) {
-    tituloFluxo.textContent = `Caixa de Dr(a). ${Usuario}`;
+    tituloFluxo.textContent = `Caixa de Dr(a). ${Nome}`;
   }
 }
 

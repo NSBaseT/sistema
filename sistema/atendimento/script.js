@@ -309,9 +309,9 @@ let Usuario = ''
         })
 
         const data = await response.json()
-        Usuario = data.Usuario;
+        Nome = data.Nome;
         const userGreeting = document.getElementById('userGreeting');
-        userGreeting.textContent = `Olá, ${Usuario}!`;
+        userGreeting.textContent = `Olá, ${Nome}!`;
 
         // data = USUARIO DO BANCO LOGADO
 

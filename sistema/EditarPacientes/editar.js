@@ -124,10 +124,11 @@ document.getElementById('mostrarSubformi').addEventListener('change', function (
         }
     })
 
-    const data = await response.json()
-    Usuario = data.Usuario;
-    const userGreeting = document.getElementById('userGreeting');
-    userGreeting.textContent = `Olá, ${Usuario}!`;
+   const data = await response.json()
+        Nome = data.Nome;
+        const userGreeting = document.getElementById('userGreeting');
+        userGreeting.textContent = `Olá, ${Nome}!`;
+
 
     // data = USUARIO DO BANCO LOGADO
 

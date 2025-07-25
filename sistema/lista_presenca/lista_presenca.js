@@ -17,7 +17,7 @@ async function carregarConsultores() {
     Nome = data.Nome;
 
     const userGreeting = document.getElementById('userGreeting');
-    if (userGreeting) userGreeting.textContent = `Olá, ${Usuario}!`;
+    if (userGreeting) userGreeting.textContent = `Olá, ${Nome}!`;
 
     const response2 = await fetch('/users');
     consultores = await response2.json();

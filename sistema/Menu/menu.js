@@ -51,23 +51,7 @@ let Usuario = ''
     thumbnail.style.display = 'block';
 
 
-    // if (data.Secretaria) {
-    //    const btnFluxo = document.getElementById("btn_fluxo");
-    //    btnFluxo.parentNode.removeChild(btnFluxo);
-    //    const backdrop3 = document.getElementById("backdrop3");
-    //    backdrop3.parentNode.removeChild(backdrop3);
-    //    const flxlateral = document.getElementById("flxLateral");
-    //    flxlateral.parentNode.removeChild(flxLateral);
-
-    // } else {
-    //    // COISAS Q EU QUERO FAZER SE N FOR SECRETARIA
-    // }
-
-    // if (data.Profissional) {
-    //    // COISAS Q EU QUERO FAZER SE FOR PROFISSIONAL
-    // } else {
-    //    // COISAS Q EU QUERO FAZER SE N FOR PROFISSIONAL
-    // }
+   
   })().catch(console.error)
 
 function redirecionaCadUser() {
