@@ -1447,7 +1447,7 @@ async function enviarAjuda() {
       body: JSON.stringify({
         tela,
         descricao,
-        especialista: Nome // <-- enviar nome do especialista logado
+        especialista: list.value // <-- enviar nome do especialista logado
       })
     });
 
