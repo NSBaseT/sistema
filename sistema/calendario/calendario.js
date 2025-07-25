@@ -1345,7 +1345,7 @@ let Usuario = ""
 const ajudaBtn = document.getElementById('ajudaBtn');
 const ajudaPopup = document.getElementById('ajudaPopup');
 const listaMensagens = document.getElementById('listaMensagens');
-const Especialista = Usuario
+const Especialista = list.value
 // Fecha o popup ao carregar a página
 window.addEventListener('load', () => {
   ajudaPopup.style.display = 'none';
@@ -1354,7 +1354,13 @@ window.addEventListener('load', () => {
 
 // Abre o popup e carrega as solicitações do backend
 ajudaBtn.addEventListener('click', async () => {
+     if (list.value === "-") {
+        alert("Selecione o Especialista")
+        return
+    }
+    else{
    ajudaPopup.style.display = 'flex';
+    }
     
   try {
     const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
