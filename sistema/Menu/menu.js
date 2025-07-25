@@ -51,7 +51,7 @@ let Usuario = ''
     thumbnail.style.display = 'block';
 
 
-   
+
   })().catch(console.error)
 
 function redirecionaCadUser() {
@@ -141,31 +141,32 @@ ajudaBtn.addEventListener('click', async () => {
     listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
 
     dados.forEach(item => {
+      if (item.status === "Concluído") return; // <-- NÃO mostra chamados concluídos
+
       const agora = new Date(item.criadoEm);
-      const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
-      const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
+      const data = agora.toLocaleDateString('pt-BR');
+      const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
 
       const div = document.createElement('div');
       div.classList.add('mensagem');
-      div.dataset.id = item.id; // útil pra atualizações futuras
+      div.dataset.id = item.id;
 
       div.innerHTML = `
-  <p><strong>Chamado #${item.ticket}</strong>
-     <strong> Data: ${data} Hora: ${hora}</strong>
-    <strong>Local da ocorrência: ${item.tela}</strong>
-  <p>${item.descricao}</p>
-  <div class="botoes-status">
-    <button type="button" disabled class="recebido ${item.status === 'Recebido' ? 'ativo' : ''}">Recebido</button>
-    <button type="button" disabled class="andamento ${item.status === 'Em Andamento' ? 'ativo' : ''}">Em Andamento</button>
-    <button type="button" disabled class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
-  </div>
-`;
+    <p><strong>Chamado #${item.ticket}</strong>
+       <strong> Data: ${data} Hora: ${hora}</strong>
+      <strong>Local da ocorrência: ${item.tela}</strong>
+    <p>${item.descricao}</p>
+    <div class="botoes-status">
+      <button type="button" disabled class="recebido ${item.status === 'Recebido' ? 'ativo' : ''}">Recebido</button>
+      <button type="button" disabled class="andamento ${item.status === 'Em Andamento' ? 'ativo' : ''}">Em Andamento</button>
+      <button type="button" disabled class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
+    </div>
+  `;
 
       div.querySelectorAll('.botoes-status button').forEach(botao => {
         botao.addEventListener('click', () => {
           div.querySelectorAll('.botoes-status button').forEach(b => b.classList.remove('ativo'));
           botao.classList.add('ativo');
-          // Aqui você pode enviar um PUT para atualizar o status no backend
         });
       });
 
@@ -299,7 +300,10 @@ function mostrarNotificacaoStatus(item) {
   // Adiciona evento ao botão OK para remover a notificação
   const btnOk = notif.querySelector('.btn-ok');
   btnOk.addEventListener('click', () => {
-    notif.remove();
+  notif.remove();
+  if (ajudaPopup.style.display !== 'none') {
+    ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
+  }
   });
 
   document.body.prepend(notif);
