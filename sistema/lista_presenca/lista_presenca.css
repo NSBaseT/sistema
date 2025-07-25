@@ -1010,7 +1010,7 @@ input:checked+.slider:before {
 
 #ajudaBtn {
   position: fixed;
-  bottom: 90px;
+  bottom: 120px;
   left: 150px;
   background: linear-gradient(45deg, rgb(241, 130, 65) 0%, rgb(63, 217, 223) 100%);
   color: white;

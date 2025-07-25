@@ -1,5 +1,45 @@
+verificaAutenticado();
+
+let Usuario = "";
+let Nome = "";
+let consultores = [];
+
+async function carregarConsultores() {
+    const token = localStorage.getItem(CHAVE);
+    const response = await fetch('/verify', {
+        body: JSON.stringify({ token }),
+        method: 'POST',
+        headers: { "Content-Type": "application/json" }
+    });
+    const data = await response.json();
+
+    Usuario = data.Usuario;
+    Nome = data.Nome;
+
+    const userGreeting = document.getElementById('userGreeting');
+    if (userGreeting) userGreeting.textContent = `Olá, ${Usuario}!`;
+
+    const response2 = await fetch('/users');
+    consultores = await response2.json();
+
+    const list = document.getElementById("lista");
+    if (!list) return;
+
+    if (data.Secretaria) {
+        consultores
+            .filter(arq => !arq.Secretaria && arq.Nome !== "ADM")
+            .forEach(({ Usuario, Nome }) => {
+                list.innerHTML += `<option value="${Usuario}">${Nome}</option>`;
+            });
+    } else {
+        [data].forEach(({ Usuario, Nome }) => {
+            list.innerHTML += `<option value="${Usuario}">${Nome}</option>`;
+        });
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    verificaAutenticado();
+  
 
     const modPresenca = document.getElementById('mod-presenca');
     const tbodyPresenca = document.getElementById("tbodyPresenca");
@@ -8,41 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let todosPacientes = [];
     let pacientesFiltradosPresenca = [];
-    let consultores = [];
     let itemsPresenca = [];
 
     async function carregarPacientes() {
         const response = await fetch('/pacientes');
         todosPacientes = await response.json();
-    }
-
-    async function carregarConsultores() {
-        const token = localStorage.getItem(CHAVE);
-        const response = await fetch('/verify', {
-            body: JSON.stringify({ token }),
-            method: 'POST',
-            headers: { "Content-Type": "application/json" }
-        });
-        const data = await response.json();
-        Usuario = data.Usuario;
-
-        const userGreeting = document.getElementById('userGreeting');
-        if (userGreeting) userGreeting.textContent = `Olá, ${Usuario}!`;
-
-        const response2 = await fetch('/users');
-        consultores = await response2.json();
-
-        if (data.Secretaria) {
-            consultores
-                .filter(arq => !arq.Secretaria && arq.Nome !== "ADM")
-                .forEach(({ Usuario, Nome }) => {
-                    list.innerHTML += `<option value="${Usuario}">${Nome}</option>`;
-                });
-        } else {
-            [data].forEach(({ Usuario, Nome }) => {
-                list.innerHTML += `<option value="${Usuario}">${Nome}</option>`;
-            });
-        }
     }
 
     async function getConsultasBD(valuePacienteFiltrado) {
@@ -54,19 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         itemsPresenca = await response.json();
-
-        // Filtro: apenas status Confirmado
         itemsPresenca = itemsPresenca.filter(item => item.Status_da_Consulta === "Compareceu");
 
-        // Filtros de data/mês/ano
-        const filtroData = document.getElementById("filtroData").value;  // yyyy-mm-dd
-        const filtroMes = document.getElementById("filtroMes").value;    // MM
-        const filtroAno = document.getElementById("filtroAno").value;    // yyyy
+        const filtroData = document.getElementById("filtroData").value;
+        const filtroMes = document.getElementById("filtroMes").value;
+        const filtroAno = document.getElementById("filtroAno").value;
 
         itemsPresenca = itemsPresenca.filter(item => {
             const [ano, mes, dia] = item.Data_do_Atendimento.split("T")[0].split("-");
-
-            const dataISO = `${ano}-${mes}-${dia}`; // Formato ISO para comparar com input
+            const dataISO = `${ano}-${mes}-${dia}`;
 
             if (filtroData && filtroData !== dataISO) return false;
             if (filtroMes && filtroMes !== mes) return false;
@@ -75,7 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return true;
         });
 
-        // Substitui id do paciente pelo nome
         itemsPresenca = itemsPresenca.map(arg => {
             arg.Nome = todosPacientes.find(({ id }) => id === arg.Nome)?.Nome || "Paciente não encontrado";
             return arg;
@@ -100,11 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${item.Horario_da_consulta}</td>
             <td>${item.Horario_de_Termino_da_consulta}</td>
             <td>${item.Status_da_Consulta === "Compareceu" ? "Presente" : item.Status_da_Consulta}</td>
-            
             <td class="columnAction">
-                <button type="button" onclick='showModal(${JSON.stringify(item)})'>
-           
-                </button>
+                <button type="button" onclick='showModal(${JSON.stringify(item)})'></button>
             </td>
         `;
 
@@ -163,14 +165,12 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarConsultores().catch(console.error);
 });
 
-
 const draggable = document.getElementById('draggable-container');
 let isDraggable = true;
 let mouseDown = false;
 
 draggable.onmousedown = function (event) {
     if (!isDraggable) return;
-
     mouseDown = true;
     event.preventDefault();
 
@@ -183,9 +183,7 @@ draggable.onmousedown = function (event) {
     }
 
     function onMouseMove(event) {
-        if (mouseDown) {
-            moveAt(event.pageX, event.pageY);
-        }
+        if (mouseDown) moveAt(event.pageX, event.pageY);
     }
 
     document.addEventListener('mousemove', onMouseMove);
@@ -198,53 +196,41 @@ draggable.onmousedown = function (event) {
 
 window.addEventListener("message", (event) => {
     if (event.data === "desligamouse") {
-        draggable.width = "50"
-        draggable.height = "50"
+        draggable.width = "50";
+        draggable.height = "50";
     }
-
     if (event.data === "ligamouse") {
-        draggable.width = "400"
-        draggable.height = "500"
+        draggable.width = "400";
+        draggable.height = "500";
     }
-
-})
-
-// document.getElementById("open-chat-btn1").addEventListener("click", () => {
-//     window.location.href = '../chat/chat.html'
-// })
-
-//botao ajuda
-
+});
 
 const ajudaBtn = document.getElementById('ajudaBtn');
 const ajudaPopup = document.getElementById('ajudaPopup');
 const listaMensagens = document.getElementById('listaMensagens');
 
-// Fecha o popup ao carregar a página
 window.addEventListener('load', () => {
     ajudaPopup.style.display = 'none';
 });
 
-
-// Abre o popup e carrega as solicitações do backend
 ajudaBtn.addEventListener('click', async () => {
     ajudaPopup.style.display = 'flex';
 
     try {
-        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(especialistaNome)}`);
+        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Nome)}`);
         if (!resp.ok) throw new Error("Falha ao buscar ajudas");
         const dados = await resp.json();
 
-        listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
+        listaMensagens.innerHTML = "";
 
         dados.forEach(item => {
             const agora = new Date(item.criadoEm);
-            const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
-            const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
+            const data = agora.toLocaleDateString('pt-BR');
+            const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
 
             const div = document.createElement('div');
             div.classList.add('mensagem');
-            div.dataset.id = item.id; // útil pra atualizações futuras
+            div.dataset.id = item.id;
 
             div.innerHTML = `
   <p><strong>Chamado #${item.ticket}</strong>
@@ -257,14 +243,6 @@ ajudaBtn.addEventListener('click', async () => {
     <button type="button" disabled class="concluido ${item.status === 'Concluído' ? 'ativo' : ''}">Concluído</button>
   </div>
 `;
-
-            div.querySelectorAll('.botoes-status button').forEach(botao => {
-                botao.addEventListener('click', () => {
-                    div.querySelectorAll('.botoes-status button').forEach(b => b.classList.remove('ativo'));
-                    botao.classList.add('ativo');
-                    // Aqui você pode enviar um PUT para atualizar o status no backend
-                });
-            });
 
             listaMensagens.appendChild(div);
         });
@@ -293,13 +271,11 @@ ajudaBtn.addEventListener('click', async () => {
         inputFiltroData.addEventListener("input", aplicarFiltros);
         inputFiltroTela.addEventListener("input", aplicarFiltros);
 
-
     } catch (err) {
         console.error(err);
         alert("Erro ao carregar solicitações de ajuda.");
     }
 });
-
 
 function fecharAjuda() {
     ajudaPopup.style.display = 'none';
@@ -321,7 +297,7 @@ async function enviarAjuda() {
             body: JSON.stringify({
                 tela,
                 descricao,
-                especialista: Nome // <-- enviar nome do especialista logado
+                especialista: Nome
             })
         });
 
@@ -343,26 +319,17 @@ let ajudasCache = new Map();
 
 async function buscarAjudas() {
     try {
-        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(especialistaNome)}`);
+        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Nome)}`);
         if (!resp.ok) throw new Error("Erro ao buscar ajudas");
         const dados = await resp.json();
 
-        // Verifica mudanças de status comparando com cache local
         dados.forEach(item => {
             const cacheItem = ajudasCache.get(item.id);
-
             if (cacheItem && cacheItem.status !== item.status) {
-                // Status mudou! Mostrar notificação
                 mostrarNotificacaoStatus(item);
             }
-
-            // Atualiza cache
             ajudasCache.set(item.id, item);
         });
-
-        // Atualiza a lista visível (se quiser)
-        // atualizarListaAjudaNaTela(dados);
-
     } catch (err) {
         console.error("Erro ao buscar ajudas no polling:", err);
     }
@@ -375,13 +342,11 @@ function mostrarNotificacaoStatus(item) {
 
     const ticket = item.id.split('-')[0];
 
-    // Mapeia o status para a classe correta
     let statusClasse = '';
     if (item.status === 'Recebido') statusClasse = 'recebido';
     else if (item.status === 'Em Andamento') statusClasse = 'andamento';
     else if (item.status === 'Concluído') statusClasse = 'concluido';
 
-    // Cria a notificação
     const notif = document.createElement('div');
     notif.className = `notificacao-status ${statusClasse}`;
     notif.innerHTML = `
@@ -389,30 +354,21 @@ function mostrarNotificacaoStatus(item) {
     <strong>Chamado #${ticket}</strong> <br>
     atualizado para <em>${item.status}</em><br>
     <small>${data} ${hora}</small><br>
-
-    <button class="btn-ok" style="align-items:center";>OK</button>
+    <button class="btn-ok" style="align-items:center">OK</button>
   `;
 
-    // Adiciona evento ao botão OK para remover a notificação
     const btnOk = notif.querySelector('.btn-ok');
     btnOk.addEventListener('click', () => {
         notif.remove();
     });
 
     document.body.prepend(notif);
-
 }
 
-// Começa o polling a cada 10 segundos
 setInterval(buscarAjudas, 5000);
-buscarAjudas(); // chama imediatamente ao carregar
+buscarAjudas();
 
 document.getElementById("ch-side").addEventListener("change", event => {
-    const mainSide = document.getElementById("main-side")
-    if (event.target.checked) {
-        mainSide.classList.remove("off")
-    }
-    else {
-        mainSide.classList.add("off")
-    }
-})
+    const mainSide = document.getElementById("main-side");
+    mainSide.classList.toggle("off", !event.target.checked);
+});
