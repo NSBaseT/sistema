@@ -28,6 +28,8 @@ model Cadastro_pacientes {
   Telefone                   String
   Email                      String
   Data_de_Nascimento         String
+  Idade                      String
+  Genero                     String
   CPF_CNPJ                   String
   Endereco                   String
   Numero                     String

@@ -26,6 +26,8 @@ const nameinp = document.getElementById("name")
 const phoneinp = document.getElementById("phone")
 const emailinp = document.getElementById("email")
 const nascinp = document.getElementById("nasc")
+const idadeinp = document.getElementById("idade")
+const geninp = document.getElementById("gen")
 const cpf_cnpjinp = document.getElementById("cpf_cnpj")
 const addressinp = document.getElementById("address")
 const numberinp = document.getElementById("number")
@@ -52,6 +54,8 @@ function cadastrar_paciente(event) {
             Telefone: phoneinp.value,
             Email: emailinp.value,
             Data_de_Nascimento: nascinp.value,
+            Idade: idadeinp.inputMode.value,
+            Genero: geninp.value,
             CPF_CNPJ: cpf_cnpjinp.value,
             Endereco: addressinp.value,
             Numero: numberinp.value,

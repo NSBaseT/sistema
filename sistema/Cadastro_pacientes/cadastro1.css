@@ -51,6 +51,30 @@ iframe::before {
   border-inline: 2px solid transparent;
 }
 
+.inputidade {
+  width: 10%;
+  background: white;
+  border: none;
+  padding: 15px 10px;
+  border-radius: 20px;
+  justify-content: center;
+  text-align: center;
+  box-shadow: #a9cfc6 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+}
+
+.inputgen {
+  width: 24%;
+  background: white;
+  border: none;
+  padding: 15px 10px;
+  border-radius: 20px;
+  justify-content: center;
+  text-align: center;
+  box-shadow: #a9cfc6 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+}
+
 .NS {
   text-align: center;
 }
