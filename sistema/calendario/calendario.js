@@ -1370,6 +1370,7 @@ ajudaBtn.addEventListener('click', async () => {
     listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
 
     dados.forEach(item => {
+  if (item.status === "Concluído") return;
       const agora = new Date(item.criadoEm);
       const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
       const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
@@ -1528,7 +1529,10 @@ function mostrarNotificacaoStatus(item) {
   // Adiciona evento ao botão OK para remover a notificação
   const btnOk = notif.querySelector('.btn-ok');
   btnOk.addEventListener('click', () => {
-    notif.remove();
+  notif.remove();
+  if (ajudaPopup.style.display !== 'none') {
+    ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
+  }
   });
 
   document.body.prepend(notif);

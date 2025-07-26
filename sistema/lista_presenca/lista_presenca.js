@@ -224,6 +224,7 @@ ajudaBtn.addEventListener('click', async () => {
         listaMensagens.innerHTML = "";
 
         dados.forEach(item => {
+  if (item.status === "Concluído") return;
             const agora = new Date(item.criadoEm);
             const data = agora.toLocaleDateString('pt-BR');
             const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
@@ -358,8 +359,11 @@ function mostrarNotificacaoStatus(item) {
   `;
 
     const btnOk = notif.querySelector('.btn-ok');
-    btnOk.addEventListener('click', () => {
-        notif.remove();
+   btnOk.addEventListener('click', () => {
+  notif.remove();
+  if (ajudaPopup.style.display !== 'none') {
+    ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
+  }
     });
 
     document.body.prepend(notif);
