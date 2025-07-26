@@ -1,4 +1,4 @@
-verificaAutenticado() 
+verificaAutenticado()
 
 const modAgen = document.getElementById('mod-agen')
 const modEspera = document.getElementById('mod-espera')
@@ -112,12 +112,12 @@ async function carregarLista(force) {
     data = data.filter(arg =>
         arg.Data_do_Atendimento === `${cY}-${cM}-${cD}` &&
         arg.Especialista.toLowerCase().includes(document.getElementById("lista").value.toLowerCase())
-        
+
     )
 
-window.agendamentosAlunos = data.filter(a => a.Eh_Aluno === true);
+    window.agendamentosAlunos = data.filter(a => a.Eh_Aluno === true);
 
-  data = data.filter(a => a.Eh_Aluno !== true);
+    data = data.filter(a => a.Eh_Aluno !== true);
 
     data.forEach(arg => {
         const contentId = `agendamento-${arg.Horario_da_consulta}`;
@@ -127,10 +127,10 @@ window.agendamentosAlunos = data.filter(a => a.Eh_Aluno === true);
 
         if (contentEl) {
 
-         contentEl.style = 'cursor: pointer; user-select: none; position: relative;';
+            contentEl.style = 'cursor: pointer; user-select: none; position: relative;';
 
-// Conteúdo da faixa com o botão na ponta
-contentEl.innerHTML = `
+            // Conteúdo da faixa com o botão na ponta
+            contentEl.innerHTML = `
   <span style="display: inline-block; padding-right: 40px;">
     ${todosPacientes.find(pac => arg.Nome === pac.id)?.Nome} - Especialista: ${consultores.find(arg => arg.Usuario === list.value).Nome} - Observação: ${arg.observacao}
   </span>
@@ -150,11 +150,11 @@ contentEl.innerHTML = `
             const lis = document.querySelectorAll("#olcards li");
             const startIndex = getIndexByDataMessage(`${arg.Horario_da_consulta}`);
             const endIndex = getIndexByDataMessage(`${arg.Horario_de_Termino_da_consulta}`);
-           
+
             for (let i = startIndex; i <= endIndex && i < lis.length; i++) {
                 let element = lis[i].firstElementChild;
                 element.style = 'background-color: rgb(205, 205, 205);';
-    
+
                 // Adicionando mensagem de Horários Agendados apenas nos elementos cinza, exceto o horário de início
                 if (i !== startIndex) {
                     const atendimentoMessage = document.createElement('div');
@@ -162,9 +162,9 @@ contentEl.innerHTML = `
                     atendimentoMessage.style = 'font-weight: bold; text-align: right;';
                     element.appendChild(atendimentoMessage);
                 }
-    
+
                 // Adicionar borda ao elemento li
-              
+
             }
 
             contentEl.onclick = () => {
@@ -213,54 +213,63 @@ contentEl.innerHTML = `
         }
     })
 
-    
+
 
 }
 
 function abrirPopupListaAlunos(horarioConsulta, especialista, event) {
-  const popup = document.getElementById('popup-lista-alunos');
-  const lista = document.getElementById('lista-alunos-popup');
-  const titulo = document.getElementById('titulo-especialista');
+    const popup = document.getElementById('popup-lista-alunos');
+    const lista = document.getElementById('lista-alunos-popup');
+    const titulo = document.getElementById('titulo-especialista');
 
-  // limpa conteúdo anterior
-  lista.innerHTML = '';
-  titulo.innerText = `Especialista: ${list.value}`;
+    // limpa conteúdo anterior
+    lista.innerHTML = '';
+    titulo.innerText = `Especialista: ${list.value}`;
 
-  // filtrar alunos do mesmo horário
- // Pega o agendamento principal baseado no horário e especialista
-const agendamentoPrincipal = (window.todosAgendamentos || []).find(p =>
-  p.Horario_da_consulta === horarioConsulta &&
-  p.Especialista === list.value &&
-  !p.Eh_Aluno
-);
-
-
-// Caso não encontre, filtra por horário exato (modo antigo)
-const alunosMesmoHorario = agendamentoPrincipal
-  ? filtrarAlunosNoIntervalo(
-      agendamentoPrincipal.Horario_da_consulta,
-      agendamentoPrincipal.Horario_de_Termino_da_consulta,
-      especialista
-    )
-  : (window.agendamentosAlunos || []).filter(p =>
-      p.Horario_da_consulta === horarioConsulta &&
-      p.Especialista === list.value &&
-      p.Eh_Aluno === true 
+    // filtrar alunos do mesmo horário
+    // Pega o agendamento principal baseado no horário e especialista
+    const agendamentoPrincipal = (window.todosAgendamentos || []).find(p =>
+        p.Horario_da_consulta === horarioConsulta &&
+        p.Especialista === list.value &&
+        !p.Eh_Aluno
     );
 
 
+    // Caso não encontre, filtra por horário exato (modo antigo)
+    const alunosMesmoHorario = agendamentoPrincipal
+        ? filtrarAlunosNoIntervalo(
+            agendamentoPrincipal.Horario_da_consulta,
+            agendamentoPrincipal.Horario_de_Termino_da_consulta,
+            especialista
+        )
+        : (window.agendamentosAlunos || []).filter(p =>
+            p.Horario_da_consulta === horarioConsulta &&
+            p.Especialista === list.value &&
+            p.Eh_Aluno === true
+        );
 
-  if (alunosMesmoHorario.length === 0) {
-    lista.innerHTML = '<li style="color: gray;">Nenhum aluno agendado nesse horário.</li>';
-  } else {
-    alunosMesmoHorario.forEach(p => {
-     if (!p.Eh_Aluno) return;  // pula se não for aluno 
-    const paciente = todosPacientes.find(tp => tp.id === p.Nome);
-    const nomeAluno = paciente ? paciente.Nome : p.Nome || "Aluno não encontrado";
 
-      lista.innerHTML += `
+
+    if (alunosMesmoHorario.length === 0) {
+        lista.innerHTML = '<li style="color: gray;">Nenhum aluno agendado nesse horário.</li>';
+    } else {
+        alunosMesmoHorario.forEach(p => {
+            if (!p.Eh_Aluno) return;  // pula se não for aluno 
+            const paciente = todosPacientes.find(tp => tp.id === p.Nome);
+            const nomeAluno = paciente ? paciente.Nome : p.Nome || "Aluno não encontrado";
+
+            const statusClass = {
+                "Cancelado": "status-cancelado",
+                "Aguardando Confirmação": "status-aguardando-confirmacao",
+                "Confirmado": "status-confirmado",
+                "Compareceu": "status-compareceu"
+            }[p.Status_da_Consulta] || "";
+
+            lista.innerHTML += `
  <li style="display: flex; align-items: center;">
-  <span style="flex-grow: 1; text-align: left;">${nomeAluno}</span>
+  <span style="flex-grow: 1; text-align: left;">
+    <span class="bolinha-status ${statusClass}" style="width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+    ${nomeAluno}</span>
   <button type="button"  onclick='abrirEdicaoAluno(${JSON.stringify(p)})' style="margin-left: 10px;" title="Editar agendamento">
     <i class="bi bi-pencil"></i>
   </button>
@@ -268,71 +277,71 @@ const alunosMesmoHorario = agendamentoPrincipal
 </li>`;
 
 
-    });
-  }
+        });
+    }
 
-  // posicionar popup perto do botão clicado
-  popup.style.left = `${event.clientX - 250}px`;
-  popup.style.top = `${event.clientY + 10}px`;
-  popup.style.display = 'block';
- 
+    // posicionar popup perto do botão clicado
+    popup.style.left = `${event.clientX - 250}px`;
+    popup.style.top = `${event.clientY + 10}px`;
+    popup.style.display = 'block';
+
 }
 
 function filtrarAlunosNoIntervalo(horarioInicioPrincipal, horarioFimPrincipal, especialista) {
-  const alunos = window.agendamentosAlunos || [];
+    const alunos = window.agendamentosAlunos || [];
 
-  return alunos.filter(p => {
-    if (!p.Eh_Aluno || p.Especialista !== list.value) return false;
-      
-    // Ignora se os horários não sobrepõem
-    return !(p.Horario_da_consulta >= horarioFimPrincipal || 
-             p.Horario_de_Termino_da_consulta <= horarioInicioPrincipal);
-  });
+    return alunos.filter(p => {
+        if (!p.Eh_Aluno || p.Especialista !== list.value) return false;
+
+        // Ignora se os horários não sobrepõem
+        return !(p.Horario_da_consulta >= horarioFimPrincipal ||
+            p.Horario_de_Termino_da_consulta <= horarioInicioPrincipal);
+    });
 }
 
 
 function abrirEdicaoAluno(agendamento) {
-  pacientesFiltrados = todosPacientes.filter(({ Especialista }) => Especialista === list.value);
+    pacientesFiltrados = todosPacientes.filter(({ Especialista }) => Especialista === list.value);
 
-  nameinp.innerHTML = '';
-  pacientesFiltrados.forEach(item => {
-    nameinp.innerHTML += `<option value="${item.id}">${item.Nome}</option>`;
-  });
+    nameinp.innerHTML = '';
+    pacientesFiltrados.forEach(item => {
+        nameinp.innerHTML += `<option value="${item.id}">${item.Nome}</option>`;
+    });
 
-  age_name.disabled = true;
-  document.getElementById("btn-start-atendimento").style = "display:auto";
+    age_name.disabled = true;
+    document.getElementById("btn-start-atendimento").style = "display:auto";
 
-  modAgen.showModal();
+    modAgen.showModal();
 
-  nameinp.value = agendamento.Nome;
-  phoneinp.value = agendamento.Telefone;
-  list.value = agendamento.Especialista;
-  data_atendimentoinp.value = agendamento.Data_do_Atendimento;
-  horario_consultainp.value = agendamento.Horario_da_consulta;
-  horariot_consultainp.value = agendamento.Horario_de_Termino_da_consulta;
-  valor_consultainpinp.value = agendamento.Valor_da_Consulta;
-  status_consultainp.value = agendamento.Status_da_Consulta;
-  status_pagamentoinp.value = agendamento.Status_do_pagamento;
-  observacaoinp.value = agendamento.observacao;
-  document.getElementById("eh_aluno").checked = agendamento.Eh_Aluno === true;
-  id_agendamento.value = agendamento.id;
-  document.getElementById("formagendamento").dataset.agendamentoid = agendamento.id;
+    nameinp.value = agendamento.Nome;
+    phoneinp.value = agendamento.Telefone;
+    list.value = agendamento.Especialista;
+    data_atendimentoinp.value = agendamento.Data_do_Atendimento;
+    horario_consultainp.value = agendamento.Horario_da_consulta;
+    horariot_consultainp.value = agendamento.Horario_de_Termino_da_consulta;
+    valor_consultainpinp.value = agendamento.Valor_da_Consulta;
+    status_consultainp.value = agendamento.Status_da_Consulta;
+    status_pagamentoinp.value = agendamento.Status_do_pagamento;
+    observacaoinp.value = agendamento.observacao;
+    document.getElementById("eh_aluno").checked = agendamento.Eh_Aluno === true;
+    id_agendamento.value = agendamento.id;
+    document.getElementById("formagendamento").dataset.agendamentoid = agendamento.id;
 }
 
 
 function fecharPopupComDelay() {
-  const popup = document.getElementById('popup-lista-alunos');
-  popup.closeTimeout = setTimeout(() => {
-    popup.style.display = 'none';
-  }, 300);
+    const popup = document.getElementById('popup-lista-alunos');
+    popup.closeTimeout = setTimeout(() => {
+        popup.style.display = 'none';
+    }, 300);
 }
 
 document.getElementById('popup-lista-alunos').addEventListener('mouseenter', () => {
-  clearTimeout(document.getElementById('popup-lista-alunos').closeTimeout);
+    clearTimeout(document.getElementById('popup-lista-alunos').closeTimeout);
 });
 
 document.getElementById('popup-lista-alunos').addEventListener('mouseleave', () => {
-  document.getElementById('popup-lista-alunos').style.display = 'none';
+    document.getElementById('popup-lista-alunos').style.display = 'none';
 });
 
 
@@ -582,7 +591,7 @@ document.getElementById('agendamento').addEventListener('click', () => {
     const subform = document.getElementById('subform');
 
     mostrarSubformCheckbox.checked = false;   // checkbox desmarcado
-    subform.style.display = 'none'; 
+    subform.style.display = 'none';
     modAgen.showModal()
 });
 
@@ -655,7 +664,7 @@ document.getElementById('mostrarSubform').addEventListener('change', function ()
     subform.style.display = this.checked ? 'block' : 'none';
 });
 
-document.getElementById('valor_consulta').addEventListener('input', function() {
+document.getElementById('valor_consulta').addEventListener('input', function () {
     let valor = this.value.replace(/\D/g, ''); // Remove tudo que não é número
 
     if (valor.length > 0) {
@@ -675,7 +684,7 @@ function converterDataFormatoBrasileiroParaISO(data) {
 
 function agendamento(event) {
     event.preventDefault();
-    
+
     const ehAluno = document.getElementById("eh_aluno").checked;
     const form = document.getElementById("formagendamento");
     const { agendamentoid: agendamentoId } = form.dataset;
@@ -705,37 +714,37 @@ function agendamento(event) {
         status_pagamentoinp.value = "";
         observacaoinp.value = "";
         document.getElementById("eh_aluno").checked = false;  // só para resetar o checkbox
-        
+
     };
 
-    
+
 
     let alertShown = false;
 
-const createAppointment = (data) => {
-    fetch("/agendamento", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!alertShown) {
-            alert("Paciente Agendado com sucesso!");
-            alertShown = true;  // Defina a flag para evitar alertas futuros
-        }
-        clearInputs();
-        carregarLista(true).catch(console.error);
-    })
-    .catch(() => {
-        if (!alertShown) {
-            alert("Erro ao Agendar");
-            alertShown = true;  // Defina a flag para evitar alertas futuros
-        }
-    });
-};
+    const createAppointment = (data) => {
+        fetch("/agendamento", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!alertShown) {
+                    alert("Paciente Agendado com sucesso!");
+                    alertShown = true;  // Defina a flag para evitar alertas futuros
+                }
+                clearInputs();
+                carregarLista(true).catch(console.error);
+            })
+            .catch(() => {
+                if (!alertShown) {
+                    alert("Erro ao Agendar");
+                    alertShown = true;  // Defina a flag para evitar alertas futuros
+                }
+            });
+    };
 
     const updateAppointment = (data) => {
         // Verifica se o status da consulta é "Cancelado" e o status do pagamento é "Pago"
@@ -743,7 +752,7 @@ const createAppointment = (data) => {
             alert("Altere o Status do pagamento para 'Pendente' ou 'Cancelado' antes de atualizar.");
             return; // Interrompe a execução se as condições forem atendidas
         }
-    
+
         // Prossegue com a atualização do agendamento se as condições não forem atendidas
         fetch("/agendamento", {
             method: "PUT",
@@ -752,24 +761,24 @@ const createAppointment = (data) => {
                 "Content-Type": "application/json"
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            alert("Paciente Atualizado com sucesso!");
-            carregarLista(true).catch(console.error);
-           
-        })
-       
-        .catch(() => alert("Erro ao atualizar"));
-       
-    };
-    
-    
+            .then(response => response.json())
+            .then(data => {
+                alert("Paciente Atualizado com sucesso!");
+                carregarLista(true).catch(console.error);
 
-   const checkForConflicts = (data, callback, agendamentoId = null) => {
-          if (data.Eh_Aluno) {
-          callback(data);
-          return;
-            }
+            })
+
+            .catch(() => alert("Erro ao atualizar"));
+
+    };
+
+
+
+    const checkForConflicts = (data, callback, agendamentoId = null) => {
+        if (data.Eh_Aluno) {
+            callback(data);
+            return;
+        }
         // Adiciona o filtro de especialista à consulta
         fetch(`/agendamentos?data=${data.Data_do_Atendimento}&especialista=${data.Especialista}`)
             .then(response => {
@@ -783,26 +792,26 @@ const createAppointment = (data) => {
                 // Verifica se há conflitos considerando o agendamento atual
                 const agendamentosPrincipais = existingAppointments.filter(a => !a.Eh_Aluno);
 
-               const conflict = agendamentosPrincipais.some(appt => {
+                const conflict = agendamentosPrincipais.some(appt => {
                     if (agendamentoId && appt.id === agendamentoId) return false;
-                    
+
                     // Verifica se a data e o especialista são os mesmos
                     if (appt.Data_do_Atendimento !== data.Data_do_Atendimento || appt.Especialista !== data.Especialista) {
                         return false;
                     }
                     // Verifica se há sobreposição considerando todos os casos possíveis
-                    return !(appt.Horario_de_Termino_da_consulta <= data.Horario_da_consulta || 
-                             appt.Horario_da_consulta >= data.Horario_de_Termino_da_consulta);
+                    return !(appt.Horario_de_Termino_da_consulta <= data.Horario_da_consulta ||
+                        appt.Horario_da_consulta >= data.Horario_de_Termino_da_consulta);
                 });
-    
+
                 if (conflict) {
                     alert("Horário já está ocupado. Escolha outro horário.");
                     alertShown = true;  // Defina a flag para evitar alertas futuros
                 } else {
                     callback(data); // Chama a função callback para agendar
                 }
-    
-                console.log(conflict);   
+
+                console.log(conflict);
             })
             .catch(error => {
                 console.error('Erro ao verificar conflitos:', error);
@@ -827,68 +836,68 @@ const createAppointment = (data) => {
     };
 
     if (appointmentData.isAluno && !appointmentData.observacao.includes('[ALUNO]')) {
-    appointmentData.observacao = '[ALUNO] ' + appointmentData.observacao;
-}
+        appointmentData.observacao = '[ALUNO] ' + appointmentData.observacao;
+    }
 
     console.log(agendamentoId)
 
-   if (agendamentoId === '0') {
-    const datasFuturasProgramadas = calculadata();
+    if (agendamentoId === '0') {
+        const datasFuturasProgramadas = calculadata();
 
-    if (datasFuturasProgramadas.length > 0) {
-        datasFuturasProgramadas.forEach(data => {
-            const futureAppointmentData = {
-                ...appointmentData,
-                Data_do_Atendimento: data.toISOString().split('T')[0]
-            };
+        if (datasFuturasProgramadas.length > 0) {
+            datasFuturasProgramadas.forEach(data => {
+                const futureAppointmentData = {
+                    ...appointmentData,
+                    Data_do_Atendimento: data.toISOString().split('T')[0]
+                };
 
-            if (futureAppointmentData.Eh_Aluno) {
-                createAppointment(futureAppointmentData); // pula o filtro
-            } else {
-                checkForConflicts(futureAppointmentData, createAppointment);
-            }
-        });
-    }
+                if (futureAppointmentData.Eh_Aluno) {
+                    createAppointment(futureAppointmentData); // pula o filtro
+                } else {
+                    checkForConflicts(futureAppointmentData, createAppointment);
+                }
+            });
+        }
 
-    if (appointmentData.Eh_Aluno) {
-        createAppointment(appointmentData); // pula o filtro
+        if (appointmentData.Eh_Aluno) {
+            createAppointment(appointmentData); // pula o filtro
+        } else {
+            checkForConflicts(appointmentData, createAppointment);
+        }
     } else {
-        checkForConflicts(appointmentData, createAppointment);
-    }
-} else {
-    const updatedData = { id: agendamentoId, ...appointmentData };
+        const updatedData = { id: agendamentoId, ...appointmentData };
 
-    if (appointmentData.Eh_Aluno) {
-        updateAppointment(updatedData); // pula o filtro
-    } else {
-        checkForConflicts(updatedData, updateAppointment, agendamentoId);
+        if (appointmentData.Eh_Aluno) {
+            updateAppointment(updatedData); // pula o filtro
+        } else {
+            checkForConflicts(updatedData, updateAppointment, agendamentoId);
+        }
     }
-}
 
 
 
 
 }
-    //ESPERA
-    function cadastro_espera(event) {
-        event.preventDefault()
-        fetch("/cadastro_paciente", {
-            method: "POST",
-            body: JSON.stringify({
-                Nome: nameinp.value,
-                Telefone: phoneinp.value,
-                Convenio: convenioinp.value,
-                Observacao: observacaoinp.value,
-                // Especialista: list.value,
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(response => response.json()).then(data => {
-            alert("Paciente adicionado a lista de espera com sucesso!")
-            window.location.reload()
-        }).catch(() => alert("Erro ao adicionar"))
-    }
+//ESPERA
+function cadastro_espera(event) {
+    event.preventDefault()
+    fetch("/cadastro_paciente", {
+        method: "POST",
+        body: JSON.stringify({
+            Nome: nameinp.value,
+            Telefone: phoneinp.value,
+            Convenio: convenioinp.value,
+            Observacao: observacaoinp.value,
+            // Especialista: list.value,
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(response => response.json()).then(data => {
+        alert("Paciente adicionado a lista de espera com sucesso!")
+        window.location.reload()
+    }).catch(() => alert("Erro ao adicionar"))
+}
 
 function AbrirEspera() {
     if (list.value === "-") {
@@ -928,10 +937,10 @@ function espera(event) {
         }
     }).then(() => {
         const selectElement = document.getElementById('lista');
-   	 const valorSelecionado = selectElement.value;
-   	 loadItens(valorSelecionado)
+        const valorSelecionado = selectElement.value;
+        loadItens(valorSelecionado)
         alert("Paciente adicionado a lista de espera com sucesso!")
-        
+
         nameinp.value = '';
         phoneinp.value = '';
         convenioinp.value = '';
@@ -1049,8 +1058,8 @@ function insertItemCancelado(item, index) {
         month: '2-digit',
         year: 'numeric'
     });
-    
-        
+
+
 
     tr.innerHTML = `
       <td><input type="checkbox"></td>
@@ -1062,7 +1071,7 @@ function insertItemCancelado(item, index) {
       <td>${item.Status_da_Consulta}</td>
       <td>${item.Status_do_pagamento}</td>
      <td class="columnAction">
-        <button type="button" onclick='showModal(${JSON.stringify(item,index)})'>
+        <button type="button" onclick='showModal(${JSON.stringify(item, index)})'>
           <i class="bi bi-pencil"></i>
         </button>
         
@@ -1070,18 +1079,18 @@ function insertItemCancelado(item, index) {
     `;
 
     tbodyCancelado.appendChild(tr);
-   
+
 }
 
 
-function showModal(item) {  
+function showModal(item) {
     // Define o ID do agendamento no dataset do formulário
     document.getElementById("formagendamento").dataset.agendamentoid = item.id;
     console.log("ID do agendamento:", item.id);
-    
+
     // Preencher o modal com as informações do item
     const selectPaciente = document.getElementById('age_name');
-    
+
     // Limpar opções existentes
     selectPaciente.innerHTML = '';
 
@@ -1157,18 +1166,18 @@ function showModal(item) {
                 "Content-Type": "application/json"
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            alert("Paciente Atualizado com sucesso!");
-            carregarLista(true).catch(console.error);
-            
-                        
-        })
-       
-        .catch(() => alert("Erro ao atualizar"));
-        
+            .then(response => response.json())
+            .then(data => {
+                alert("Paciente Atualizado com sucesso!");
+                carregarLista(true).catch(console.error);
+
+
+            })
+
+            .catch(() => alert("Erro ao atualizar"));
+
     }
-    
+
 }
 
 
@@ -1177,7 +1186,7 @@ function showModal(item) {
 document.getElementById('btn-close').addEventListener('click', function () {
     document.getElementById('mod-agen').close();
     loadConsultas(new Event('submit')); // Recarregar a lista
-   
+
 });
 
 
@@ -1293,51 +1302,51 @@ const draggable = document.getElementById('draggable-container');
 let isDraggable = true;
 let mouseDown = false;
 
-draggable.onmousedown = function (event){
-   if (!isDraggable) return;
+draggable.onmousedown = function (event) {
+    if (!isDraggable) return;
 
-   mouseDown = true;
-   event.preventDefault();
-   
-   let shiftX = event.clientX - draggable.getBoundingClientRect().left;
-   let shiftY = event.clientY - draggable.getBoundingClientRect().top;
+    mouseDown = true;
+    event.preventDefault();
 
-   function moveAt(pageX, pageY) {
-       draggable.style.left = pageX - shiftX + 'px';
-       draggable.style.top = pageY - shiftY + 'px';
-   }
+    let shiftX = event.clientX - draggable.getBoundingClientRect().left;
+    let shiftY = event.clientY - draggable.getBoundingClientRect().top;
 
-   function onMouseMove(event) {
-       if (mouseDown) {
-           moveAt(event.pageX, event.pageY);
-       }
-   }
+    function moveAt(pageX, pageY) {
+        draggable.style.left = pageX - shiftX + 'px';
+        draggable.style.top = pageY - shiftY + 'px';
+    }
 
-   document.addEventListener('mousemove', onMouseMove);
+    function onMouseMove(event) {
+        if (mouseDown) {
+            moveAt(event.pageX, event.pageY);
+        }
+    }
 
-   draggable.onmouseup = function () {
-       mouseDown = false;
-       document.removeEventListener('mousemove', onMouseMove);
-   };
+    document.addEventListener('mousemove', onMouseMove);
+
+    draggable.onmouseup = function () {
+        mouseDown = false;
+        document.removeEventListener('mousemove', onMouseMove);
+    };
 };
 
-window.addEventListener("message", (event)=>{
-if (event.data === "desligamouse"){
-draggable.width = "50" 
-draggable.height = "50"
-}
+window.addEventListener("message", (event) => {
+    if (event.data === "desligamouse") {
+        draggable.width = "50"
+        draggable.height = "50"
+    }
 
-if (event.data === "ligamouse"){
-draggable.width = "400" 
-draggable.height = "500"
-}
+    if (event.data === "ligamouse") {
+        draggable.width = "400"
+        draggable.height = "500"
+    }
 
 })
 
 document.getElementById("open-chat-btn1").addEventListener("click", () => {
     window.location.href = '../chat/chat.html'
- })
- 
+})
+
 //botao ajuda
 
 
@@ -1345,41 +1354,41 @@ let Usuario = ""
 const ajudaBtn = document.getElementById('ajudaBtn');
 const ajudaPopup = document.getElementById('ajudaPopup');
 const listaMensagens = document.getElementById('listaMensagens');
-const Especialista = list.value
+const especialista = Usuario
 // Fecha o popup ao carregar a página
 window.addEventListener('load', () => {
-  ajudaPopup.style.display = 'none';
+    ajudaPopup.style.display = 'none';
 });
 
 
 // Abre o popup e carrega as solicitações do backend
 ajudaBtn.addEventListener('click', async () => {
-     if (list.value === "-") {
+    if (list.value === "-") {
         alert("Selecione o Especialista")
         return
     }
-    else{
-   ajudaPopup.style.display = 'flex';
+    else {
+        ajudaPopup.style.display = 'flex';
     }
-    
-  try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
-    if (!resp.ok) throw new Error("Falha ao buscar ajudas");
-    const dados = await resp.json();
 
-    listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
+    try {
+        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(especialista)}`);
+        if (!resp.ok) throw new Error("Falha ao buscar ajudas");
+        const dados = await resp.json();
 
-    dados.forEach(item => {
-  if (item.status === "Concluído") return;
-      const agora = new Date(item.criadoEm);
-      const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
-      const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
+        listaMensagens.innerHTML = ""; // limpa a lista antes de renderizar
 
-      const div = document.createElement('div');
-      div.classList.add('mensagem');
-      div.dataset.id = item.id; // útil pra atualizações futuras
+        dados.forEach(item => {
+            if (item.status === "Concluído") return;
+            const agora = new Date(item.criadoEm);
+            const data = agora.toLocaleDateString('pt-BR'); // ex: 21/07/2025
+            const hora = agora.toLocaleTimeString('pt-BR', { hour12: false }); // ex: 20:35:12
 
-      div.innerHTML = `
+            const div = document.createElement('div');
+            div.classList.add('mensagem');
+            div.dataset.id = item.id; // útil pra atualizações futuras
+
+            div.innerHTML = `
   <p><strong>Chamado #${item.ticket}</strong>
      <strong> Data: ${data} Hora: ${hora}</strong>
     <strong>Local da ocorrência: ${item.tela}</strong>
@@ -1391,133 +1400,133 @@ ajudaBtn.addEventListener('click', async () => {
   </div>
 `;
 
-      div.querySelectorAll('.botoes-status button').forEach(botao => {
-        botao.addEventListener('click', () => {
-          div.querySelectorAll('.botoes-status button').forEach(b => b.classList.remove('ativo'));
-          botao.classList.add('ativo');
-          // Aqui você pode enviar um PUT para atualizar o status no backend
+            div.querySelectorAll('.botoes-status button').forEach(botao => {
+                botao.addEventListener('click', () => {
+                    div.querySelectorAll('.botoes-status button').forEach(b => b.classList.remove('ativo'));
+                    botao.classList.add('ativo');
+                    // Aqui você pode enviar um PUT para atualizar o status no backend
+                });
+            });
+
+            listaMensagens.appendChild(div);
         });
-      });
 
-      listaMensagens.appendChild(div);
-    });
+        const inputFiltroTicket = document.getElementById("filtroTicket");
+        const inputFiltroData = document.getElementById("filtroData");
+        const inputFiltroTela = document.getElementById("filtroTela");
 
-    const inputFiltroTicket = document.getElementById("filtroTicket");
-    const inputFiltroData = document.getElementById("filtroData");
-    const inputFiltroTela = document.getElementById("filtroTela");
+        function aplicarFiltros() {
+            const termoTicket = inputFiltroTicket.value.trim().toLowerCase();
+            const termoData = inputFiltroData.value.trim().toLowerCase();
+            const termoTela = inputFiltroTela.value.trim().toLowerCase();
 
-    function aplicarFiltros() {
-      const termoTicket = inputFiltroTicket.value.trim().toLowerCase();
-      const termoData = inputFiltroData.value.trim().toLowerCase();
-      const termoTela = inputFiltroTela.value.trim().toLowerCase();
+            document.querySelectorAll(".mensagem").forEach(div => {
+                const texto = div.innerText.toLowerCase();
 
-      document.querySelectorAll(".mensagem").forEach(div => {
-        const texto = div.innerText.toLowerCase();
+                const matchTicket = !termoTicket || texto.includes(termoTicket);
+                const matchData = !termoData || texto.includes(termoData);
+                const matchTela = !termoTela || texto.includes(termoTela);
 
-        const matchTicket = !termoTicket || texto.includes(termoTicket);
-        const matchData = !termoData || texto.includes(termoData);
-        const matchTela = !termoTela || texto.includes(termoTela);
+                div.style.display = matchTicket && matchData && matchTela ? "block" : "none";
+            });
+        }
 
-        div.style.display = matchTicket && matchData && matchTela ? "block" : "none";
-      });
+        inputFiltroTicket.addEventListener("input", aplicarFiltros);
+        inputFiltroData.addEventListener("input", aplicarFiltros);
+        inputFiltroTela.addEventListener("input", aplicarFiltros);
+
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao carregar solicitações de ajuda.");
     }
-
-    inputFiltroTicket.addEventListener("input", aplicarFiltros);
-    inputFiltroData.addEventListener("input", aplicarFiltros);
-    inputFiltroTela.addEventListener("input", aplicarFiltros);
-
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao carregar solicitações de ajuda.");
-  }
 });
 
 
 function fecharAjuda() {
-  ajudaPopup.style.display = 'none';
+    ajudaPopup.style.display = 'none';
 }
 
 async function enviarAjuda() {
-  const tela = document.getElementById('tela').value;
-  const descricao = document.getElementById('descricao').value;
+    const tela = document.getElementById('tela').value;
+    const descricao = document.getElementById('descricao').value;
 
-  if (!tela || !descricao.trim()) {
-    alert('Preencha todos os campos!');
-    return;
-  }
+    if (!tela || !descricao.trim()) {
+        alert('Preencha todos os campos!');
+        return;
+    }
 
-  try {
-    const response = await fetch("/ajuda", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tela,
-        descricao,
-        especialista: list.value // <-- enviar nome do especialista logado
-      })
-    });
+    try {
+        const response = await fetch("/ajuda", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tela,
+                descricao,
+                especialista: list.value // <-- enviar nome do especialista logado
+            })
+        });
 
-    if (!response.ok) throw new Error("Erro ao enviar ajuda");
+        if (!response.ok) throw new Error("Erro ao enviar ajuda");
 
-    ajudaBtn.click();
-    document.getElementById('descricao').value = '';
-    document.getElementById('tela').selectedIndex = 0;
+        ajudaBtn.click();
+        document.getElementById('descricao').value = '';
+        document.getElementById('tela').selectedIndex = 0;
 
-    alert('Ajuda enviada com sucesso!');
-    fecharAjuda();
-  } catch (error) {
-    console.error(error);
-    alert('Erro ao enviar ajuda. Tente novamente.');
-  }
+        alert('Ajuda enviada com sucesso!');
+        fecharAjuda();
+    } catch (error) {
+        console.error(error);
+        alert('Erro ao enviar ajuda. Tente novamente.');
+    }
 }
 
 let ajudasCache = new Map();
 
 async function buscarAjudas() {
-  try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
-    if (!resp.ok) throw new Error("Erro ao buscar ajudas");
-    const dados = await resp.json();
+    try {
+        const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(especialista)}`);
+        if (!resp.ok) throw new Error("Erro ao buscar ajudas");
+        const dados = await resp.json();
 
-    // Verifica mudanças de status comparando com cache local
-    dados.forEach(item => {
-      const cacheItem = ajudasCache.get(item.id);
+        // Verifica mudanças de status comparando com cache local
+        dados.forEach(item => {
+            const cacheItem = ajudasCache.get(item.id);
 
-      if (cacheItem && cacheItem.status !== item.status) {
-        // Status mudou! Mostrar notificação
-        mostrarNotificacaoStatus(item);
-      }
+            if (cacheItem && cacheItem.status !== item.status) {
+                // Status mudou! Mostrar notificação
+                mostrarNotificacaoStatus(item);
+            }
 
-      // Atualiza cache
-      ajudasCache.set(item.id, item);
-    });
+            // Atualiza cache
+            ajudasCache.set(item.id, item);
+        });
 
-    // Atualiza a lista visível (se quiser)
-    // atualizarListaAjudaNaTela(dados);
+        // Atualiza a lista visível (se quiser)
+        // atualizarListaAjudaNaTela(dados);
 
-  } catch (err) {
-    console.error("Erro ao buscar ajudas no polling:", err);
-  }
+    } catch (err) {
+        console.error("Erro ao buscar ajudas no polling:", err);
+    }
 }
 
 function mostrarNotificacaoStatus(item) {
-  const agora = new Date();
-  const data = agora.toLocaleDateString('pt-BR');
-  const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
+    const agora = new Date();
+    const data = agora.toLocaleDateString('pt-BR');
+    const hora = agora.toLocaleTimeString('pt-BR', { hour12: false });
 
-  const ticket = item.id.split('-')[0];
+    const ticket = item.id.split('-')[0];
 
-  // Mapeia o status para a classe correta
-  let statusClasse = '';
-  if (item.status === 'Recebido') statusClasse = 'recebido';
-  else if (item.status === 'Em Andamento') statusClasse = 'andamento';
-  else if (item.status === 'Concluído') statusClasse = 'concluido';
+    // Mapeia o status para a classe correta
+    let statusClasse = '';
+    if (item.status === 'Recebido') statusClasse = 'recebido';
+    else if (item.status === 'Em Andamento') statusClasse = 'andamento';
+    else if (item.status === 'Concluído') statusClasse = 'concluido';
 
-  // Cria a notificação
-  const notif = document.createElement('div');
-  notif.className = `notificacao-status ${statusClasse}`;
-  notif.innerHTML = `
+    // Cria a notificação
+    const notif = document.createElement('div');
+    notif.className = `notificacao-status ${statusClasse}`;
+    notif.innerHTML = `
     NsBaseTech informa: <br>
     <strong>Chamado #${ticket}</strong> <br>
     atualizado para <em>${item.status}</em><br>
@@ -1526,16 +1535,16 @@ function mostrarNotificacaoStatus(item) {
     <button class="btn-ok" style="align-items:center";>OK</button>
   `;
 
-  // Adiciona evento ao botão OK para remover a notificação
-  const btnOk = notif.querySelector('.btn-ok');
-  btnOk.addEventListener('click', () => {
-  notif.remove();
-  if (ajudaPopup.style.display !== 'none') {
-    ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
-  }
-  });
+    // Adiciona evento ao botão OK para remover a notificação
+    const btnOk = notif.querySelector('.btn-ok');
+    btnOk.addEventListener('click', () => {
+        notif.remove();
+        if (ajudaPopup.style.display !== 'none') {
+            ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
+        }
+    });
 
-  document.body.prepend(notif);
+    document.body.prepend(notif);
 
 }
 
