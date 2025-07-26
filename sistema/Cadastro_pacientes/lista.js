@@ -232,7 +232,7 @@ ajudaBtn.addEventListener('click', async () => {
    ajudaPopup.style.display = 'flex';
     
   try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Nome)}`);
     if (!resp.ok) throw new Error("Falha ao buscar ajudas");
     const dados = await resp.json();
 
@@ -345,7 +345,7 @@ let ajudasCache = new Map();
 
 async function buscarAjudas() {
   try {
-    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Especialista)}`);
+    const resp = await fetch(`/ajuda?especialista=${encodeURIComponent(Nome)}`);
     if (!resp.ok) throw new Error("Erro ao buscar ajudas");
     const dados = await resp.json();
 
