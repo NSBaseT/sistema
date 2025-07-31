@@ -21,7 +21,9 @@ document.getElementById("open-chat-btn1").addEventListener("click", () => {
   window.location.href = '../chat/chat.html'
 })
 
+let Nome = '';
 let Usuario = ''
+
 
   ; (async () => {
     const token = localStorage.getItem(CHAVE)
@@ -39,6 +41,7 @@ let Usuario = ''
 
     const data = await response.json()
     Nome = data.Nome;
+    Usuario = data.Usuario;
 
     const userGreeting = document.getElementById('userGreeting');
     userGreeting.textContent = `Olá, ${Nome}!`;
@@ -50,7 +53,7 @@ let Usuario = ''
     thumbnail.src = data.foto
     thumbnail.style.display = 'block';
 
-
+    abrirDashboard()
 
   })().catch(console.error)
 
@@ -300,10 +303,10 @@ function mostrarNotificacaoStatus(item) {
   // Adiciona evento ao botão OK para remover a notificação
   const btnOk = notif.querySelector('.btn-ok');
   btnOk.addEventListener('click', () => {
-  notif.remove();
-  if (ajudaPopup.style.display !== 'none') {
-    ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
-  }
+    notif.remove();
+    if (ajudaPopup.style.display !== 'none') {
+      ajudaBtn.click(); // atualiza a lista de chamados se o popup estiver aberto
+    }
   });
 
   document.body.prepend(notif);
@@ -314,7 +317,87 @@ function mostrarNotificacaoStatus(item) {
 setInterval(buscarAjudas, 5000);
 buscarAjudas(); // chama imediatamente ao carregar
 
+//dashboard
 
+function abrirDashboard() {
+
+  const dashboard = document.getElementById("modal-dashboard");
+  dashboard.style.display = "block";
+
+
+  // Aguarda canvas estar visível
+  setTimeout(() => {
+    fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
+
+      .then(res => res.json())
+      .then(data => {
+        const statusCount = {
+          "Aguardando Confirmação": 0,
+          "Confirmado": 0,
+          "Compareceu": 0,
+          "Cancelado": 0
+        };
+
+        data.forEach(a => {
+          if (statusCount[a.Status_da_Consulta] !== undefined) {
+            statusCount[a.Status_da_Consulta]++;
+          }
+        });
+
+        const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
+        const labels = Object.keys(statusCount);
+        const values = labels.map(label =>
+          ((statusCount[label] / total) * 100).toFixed(1)
+        );
+
+        if (window.statusChart) window.statusChart.destroy();
+
+        const ctx = document.getElementById("statusPieChart").getContext("2d");
+        window.statusChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels.map(label => `${label} (${statusCount[label]})`),
+            datasets: [{
+              data: values,
+              backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c'],
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              },
+              tooltip: {
+                callbacks: {
+                  label: (tooltipItem) => {
+                    const label = tooltipItem.label;
+                    const value = tooltipItem.raw;
+                    return `${label}: ${value}%`;
+                  }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Distribuição dos Agendamentos'
+              }
+            }
+          }
+        });
+      });
+  }, 100);
+}
+
+function fecharDashboard() {
+  document.getElementById("modal-dashboard").style.display = "none";
+}
+
+
+
+
+window.addEventListener("load", () => {
+  abrirDashboard();
+});
 
 
 
