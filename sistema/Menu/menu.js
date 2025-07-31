@@ -317,87 +317,237 @@ function mostrarNotificacaoStatus(item) {
 setInterval(buscarAjudas, 5000);
 buscarAjudas(); // chama imediatamente ao carregar
 
-//dashboard
+
+
+
+
+
+// JavaScript atualizado
 
 function abrirDashboard() {
-
   const dashboard = document.getElementById("modal-dashboard");
   dashboard.style.display = "block";
 
+  const Nome = "Especialista";
 
-  // Aguarda canvas estar visível
-  setTimeout(() => {
-    fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
+  fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
+    .then(res => res.json())
+    .then(data => {
+      const statusCount = {
+        "Aguardando Confirmação": 0,
+        "Confirmado": 0,
+        "Compareceu": 0,
+        "Cancelado": 0
+      };
 
-      .then(res => res.json())
-      .then(data => {
-        const statusCount = {
-          "Aguardando Confirmação": 0,
-          "Confirmado": 0,
-          "Compareceu": 0,
-          "Cancelado": 0
-        };
-
-        data.forEach(a => {
-          if (statusCount[a.Status_da_Consulta] !== undefined) {
-            statusCount[a.Status_da_Consulta]++;
-          }
-        });
-
-        const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
-        const labels = Object.keys(statusCount);
-        const values = labels.map(label =>
-          ((statusCount[label] / total) * 100).toFixed(1)
-        );
-
-        if (window.statusChart) window.statusChart.destroy();
-
-        const ctx = document.getElementById("statusPieChart").getContext("2d");
-        window.statusChart = new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: labels.map(label => `${label} (${statusCount[label]})`),
-            datasets: [{
-              data: values,
-              backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c'],
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'bottom'
-              },
-              tooltip: {
-                callbacks: {
-                  label: (tooltipItem) => {
-                    const label = tooltipItem.label;
-                    const value = tooltipItem.raw;
-                    return `${label}: ${value}%`;
-                  }
-                }
-              },
-              title: {
-                display: true,
-                text: 'Distribuição dos Agendamentos'
-              }
-            }
-          }
-        });
+      data.forEach(a => {
+        if (statusCount[a.Status_da_Consulta] !== undefined) {
+          statusCount[a.Status_da_Consulta]++;
+        }
       });
-  }, 100);
+
+      const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
+      const labels = Object.keys(statusCount);
+      const values = labels.map(label =>
+        ((statusCount[label] / total) * 100).toFixed(1)
+      );
+
+      const ctx = document.getElementById("statusPieChart").getContext("2d");
+
+      if (window.statusChart) window.statusChart.destroy();
+
+      window.statusChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels.map(label => `${label} (${statusCount[label]})`),
+          datasets: [{
+            data: values,
+            backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: (tooltipItem) => {
+                  const label = tooltipItem.label;
+                  const value = tooltipItem.raw;
+                  return `${label}: ${value}%`;
+                }
+              }
+            },
+            title: { display: true, text: 'Distribuição dos Agendamentos' }
+          }
+        }
+      });
+    });
 }
 
 function fecharDashboard() {
-  document.getElementById("modal-dashboard").style.display = "none";
+  const dashboard = document.getElementById("modal-dashboard");
+  dashboard.style.display = "none";
 }
 
+function abrirDashboardPrincipal() {
+  // Fecha modal inicial se aberto
+  const modalDashboard = document.getElementById("modal-dashboard");
+  if (modalDashboard) modalDashboard.style.display = "none";
 
+  // Abre o principal
+  const dashboard = document.getElementById("modal-dashboard-principal");
+  dashboard.style.display = "block";
 
+  // 1) PACIENTES
+  fetch("/pacientes")
+    .then(res => res.json())
+    .then(data => {
+      const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
+      const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
 
-window.addEventListener("load", () => {
-  abrirDashboard();
-});
+      let totalPacientes = data.length;
 
+    data.forEach(paciente => {
+  const sexo = paciente.Genero || "Outro";
+  const idade = parseInt(paciente.Idade) || 0;
 
+        if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
+        else sexoCount["Outro"]++;
 
+        if (idade <= 18) idadeBuckets['0-18']++;
+        else if (idade <= 30) idadeBuckets['19-30']++;
+        else if (idade <= 45) idadeBuckets['31-45']++;
+        else if (idade <= 60) idadeBuckets['46-60']++;
+        else idadeBuckets['60+']++;
+      });
+
+      document.getElementById("cardTotalPacientes").textContent = `Total de Pacientes: ${totalPacientes}`;
+
+      // Montar comparativo por sexo com ícones e porcentagens
+      const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
+      const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
+      const percFem = totalSexo ? ((sexoCount.Feminino / totalSexo) * 100).toFixed(1) : 0;
+      const percOutro = totalSexo ? ((sexoCount.Outro / totalSexo) * 100).toFixed(1) : 0;
+
+      // Coloca no card com ícones
+      document.getElementById("cardSexoComparativo").innerHTML = `
+        <div class="sexo-item"><span class="icon">👦</span> ${percMasc}%</div>
+        <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
+        <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
+      `;
+
+      // Faixa etária mais comum
+      const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+      document.getElementById("cardIdadeComparativo").textContent = `Faixa Etária mais comum: ${idadePredominante}`;
+
+      // Gráfico sexo
+      const sexoCtx = document.getElementById("sexoChart").getContext("2d");
+      if (window.sexoChart) window.sexoChart.destroy();
+      window.sexoChart = new Chart(sexoCtx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(sexoCount),
+          datasets: [{
+            data: Object.values(sexoCount),
+            backgroundColor: ['#3498db', '#e74c3c', '#9b59b6']
+          }]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: 'Distribuição por Sexo' },
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+
+      // Gráfico idade
+      const idadeCtx = document.getElementById("idadeChart").getContext("2d");
+      if (window.idadeChart) window.idadeChart.destroy();
+      window.idadeChart = new Chart(idadeCtx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(idadeBuckets),
+          datasets: [{
+            label: 'Pacientes',
+            data: Object.values(idadeBuckets),
+            backgroundColor: '#2ecc71'
+          }]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: 'Distribuição por Faixa Etária' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    });
+
+  // 2) AGENDAMENTOS
+  const Nome = "Especialista";
+  fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
+    .then(res => res.json())
+    .then(data => {
+      const statusCount = {
+        "Aguardando Confirmação": 0,
+        "Confirmado": 0,
+        "Compareceu": 0,
+        "Cancelado": 0
+      };
+
+      data.forEach(a => {
+        if (statusCount[a.Status_da_Consulta] !== undefined) {
+          statusCount[a.Status_da_Consulta]++;
+        }
+      });
+
+      // Preenche os cards de agendamento
+      document.getElementById("cardConfirmado").textContent = `Confirmados: ${statusCount["Confirmado"]}`;
+      document.getElementById("cardCompareceu").textContent = `Compareceram: ${statusCount["Compareceu"]}`;
+      document.getElementById("cardAguardando").textContent = `Aguardando: ${statusCount["Aguardando Confirmação"]}`;
+      document.getElementById("cardCancelado").textContent = `Cancelados: ${statusCount["Cancelado"]}`;
+
+      // Gráfico de pizza agendamento
+      const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
+      const labels = Object.keys(statusCount);
+      const values = labels.map(label =>
+        ((statusCount[label] / total) * 100).toFixed(1)
+      );
+
+      const ctx = document.getElementById("statusPieChartPrincipal").getContext("2d");
+      if (window.statusChartPrincipal) window.statusChartPrincipal.destroy();
+      window.statusChartPrincipal = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels.map(label => `${label} (${statusCount[label]})`),
+          datasets: [{
+            data: values,
+            backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: (tooltipItem) => {
+                  const label = tooltipItem.label;
+                  const value = tooltipItem.raw;
+                  return `${label}: ${value}%`;
+                }
+              }
+            },
+            title: { display: true, text: 'Distribuição dos Agendamentos' }
+          }
+        }
+      });
+    });
+}
+
+function fecharDashboardPrincipal() {
+  const dashboard = document.getElementById("modal-dashboard-principal");
+  dashboard.style.display = "none";
+}
