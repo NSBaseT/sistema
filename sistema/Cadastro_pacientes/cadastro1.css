@@ -513,6 +513,79 @@ input:checked+.slider:before {
   background-color: #0056b3;
 }
 
+.drive-button {
+  position:relative;
+  width: 130px;
+  height: 60px;
+  left: 90%;  
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
+  color: white;  
+  border-radius: 20px;
+  box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.drive-button:hover {
+  transform: scale(1.03);
+  box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+}
+
+.drive-button:active {
+  transform: scale(0.95);
+  box-shadow: rgba(133, 215, 197, 0.878) 0px 15px 10px -10px;
+}
+
+.cadastrar-button {
+  position:relative;
+  width: 130px;
+  height: 60px;
+  left: 5%;  
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
+  color: white;  
+  border-radius: 20px;
+  box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.cadastrar-button:hover {
+  transform: scale(1.03);
+  box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+}
+
+.cadastrar-button:active {
+  transform: scale(0.95);
+  box-shadow: rgba(133, 215, 197, 0.878) 0px 15px 10px -10px;
+}
+
+.lista-button {
+  position:relative;
+  width: 130px;
+  height: 60px;
+  left: 120%;  
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
+  color: white;  
+  border-radius: 20px;
+  box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.lista-button:hover {
+  transform: scale(1.03);
+  box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 23px 10px -20px;
+}
+
+.lista-button:active {
+  transform: scale(0.95);
+  box-shadow: rgba(133, 215, 197, 0.878) 0px 15px 10px -10px;
+}
+ 
+
 @media (min-width: 410px) and (max-width: 600px) {
   iframe {
     display: none;
