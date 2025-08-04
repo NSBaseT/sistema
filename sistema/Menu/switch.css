@@ -594,7 +594,7 @@ a {
   position: fixed;
   top: 150px;
   right: 20px;
-  width: 350px;
+  width: 22%;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -602,6 +602,41 @@ a {
   z-index: 9999;
   display: none;
   /* começa invisível */
+}
+
+.botaoFechar{
+  position:relative;
+  top: 40px; 
+  left:90%;
+  transform: translateX(-50%);
+  display: block;
+  width: 20%;
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
+  color: white;
+  padding-block: 2%;  
+  border-radius: 20px;
+  box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out;  
+}
+
+.botaoMais{
+  position:relative;
+  margin-top: 10px; 
+  left: 6%;
+  transform: translateX(-50%);
+  display: block;
+  width: 13%;
+  font-weight: bold;
+  background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
+  color: white;
+  padding-block: 2%;  
+  border-radius: 20px;
+  box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
+  border: none;
+  transition: all 0.2s ease-in-out; 
+  font-size: 120%;
 }
 
 /* dashboard principal*/
