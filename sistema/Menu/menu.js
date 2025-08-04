@@ -548,6 +548,7 @@ function abrirDashboardPrincipal() {
 }
 
 function fecharDashboardPrincipal() {
-  const dashboard = document.getElementById("modal-dashboard-principal");
-  dashboard.style.display = "none";
+  const dashboardprincipal = document.getElementById("modal-dashboard-principal");
+  dashboardprincipal.style.display = "none";
+  location.reload();
 }

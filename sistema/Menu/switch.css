@@ -595,6 +595,8 @@ a {
   top: 150px;
   right: 20px;
   width: 22%;
+  height:55%;
+  max-height:max-content;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -606,7 +608,7 @@ a {
 
 .botaoFechar{
   position:relative;
-  top: 40px; 
+  top: 2px; 
   left:90%;
   transform: translateX(-50%);
   display: block;
@@ -623,11 +625,12 @@ a {
 
 .botaoMais{
   position:relative;
-  margin-top: 10px; 
   left: 6%;
+  bottom: 30px;
   transform: translateX(-50%);
   display: block;
-  width: 13%;
+  width: 12%;
+  height: 11%;
   font-weight: bold;
   background: linear-gradient(45deg, rgb(12, 158, 146) 0%, rgb(63, 217, 223) 100%);
   color: white;
@@ -636,7 +639,7 @@ a {
   box-shadow: rgba(133, 215, 194, 0.878) 0px 20px 10px -15px;
   border: none;
   transition: all 0.2s ease-in-out; 
-  font-size: 120%;
+  font-size: 100%;
 }
 
 /* dashboard principal*/
