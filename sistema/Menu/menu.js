@@ -362,7 +362,7 @@ function abrirDashboard() {
           labels: labels.map(label => `${label} (${statusCount[label]})`),
           datasets: [{
             data: values,
-            backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
+            backgroundColor: ['#f39c12', '#2ecc71', '#3498db', '#e74c3c']
           }]
         },
         options: {
