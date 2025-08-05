@@ -215,52 +215,54 @@
 
 
         <!-- HTML -->
-<div id="modal-dashboard" class="modal-dashboard">
-  <h3 style="margin-top: 0;">📊 Status dos Agendamentos</h3>
-  <canvas id="statusPieChart" width="350" height="300"></canvas>
-  <button onclick="fecharDashboard()" class="botaoFechar">Fechar</button>
-  <button title="Mais detalhes" onclick="abrirDashboardPrincipal()" class="botaoMais">+</button>
-</div>
-
-<div id="modal-dashboard-principal" class="modal-dashboard-principal">
-  <h3>📈 Dashboard Principal</h3>
-
-  <!-- Seção de Agendamentos -->
-  <div class="dashboard-section">
-    <h4>Agendamentos</h4>
-    <div class="agendamento-cards">
-      <div class="card" id="cardConfirmado">Confirmados: --</div>
-      <div class="card" id="cardCompareceu">Compareceram: --</div>
-      <div class="card" id="cardAguardando">Aguardando: --</div>
-      <div class="card" id="cardCancelado">Cancelados: --</div>
-    </div>
-    <canvas id="statusPieChartPrincipal" width="400" height="300"></canvas>
-  </div>
-
-  <!-- Seção de Pacientes -->
-  <div class="dashboard-section">
-    <h4>Pacientes</h4>
-    <div class="paciente-cards">
-      <div class="card" id="cardTotalPacientes">Total de Pacientes: --</div>
-      <div class="card" id="cardSexoComparativo">
-        <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
-        <div class="sexo-bar">
-          <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
-          <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
-          <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
+        <div id="modal-dashboard" class="modal-dashboard">
+            <h3 style="margin-top: 0;">📊 Status dos Agendamentos</h3>
+            <canvas id="statusPieChart" width="250" height="200"></canvas>
+            <button onclick="fecharDashboard()" class="botaoFechar">Fechar</button>
+            <button title="Mais detalhes" onclick="abrirDashboardPrincipal()" class="botaoMais">+</button>
         </div>
-      </div>
-      <div class="card" id="cardIdadeComparativo">Comparativo por Idade</div>
-    </div>
 
-    <div class="dashboard-graficos">
-      <canvas id="sexoChart" width="250" height="250"></canvas>
-      <canvas id="idadeChart" width="250" height="250"></canvas>
-    </div>
-  </div>
+        <div id="modal-dashboard-principal" class="modal-dashboard-principal">
+            
+            <h3>📈 Dashboard Principal</h3>
 
-  <button onclick="fecharDashboardPrincipal()">Fechar</button>
-</div>
+            <!-- Seção de Agendamentos -->
+            <div class="dashboard-section">
+                <h3 class="dashprincipal">Agendamentos</h3>
+                <div class="agendamento-conteudo">
+                    <div class="agendamento-cards">
+                        <div class="card" id="cardConfirmado">Confirmados: --</div>
+                        <div class="card" id="cardCompareceu">Compareceram: --</div>
+                        <div class="card" id="cardAguardando">Aguardando: --</div>
+                        <div class="card" id="cardCancelado">Cancelados: --</div>
+                    </div>
+                    <canvas class="grafico-status" id="statusPieChartPrincipal" width="400" height="300"></canvas>
+                </div>
+
+
+            </div>
+
+            <!-- Seção de Pacientes -->
+            <div class="dashboard-section">
+                <h3 class="dashprincipal">Pacientes</h3>
+                <div class="paciente-cards">
+                    <div class="card" id="cardTotalPacientes">Total de Pacientes: --</div>
+                    <div class="card" id="cardSexoComparativo">
+                        <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
+                        <div class="sexo-bar">
+                            <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
+                            <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
+                            <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
+                        </div>
+                    </div>
+                    <div class="card" id="cardIdadeComparativo">Comparativo por Idade</div>
+                </div>
+
+            </div>
+
+            <button style="left:98%; top:-20.5%; margin:0; width:8%;" class="botaoFechar"
+                onclick="fecharDashboardPrincipal()">Fechar</button>
+        </div>
 
 
 

@@ -424,6 +424,7 @@ function abrirDashboardPrincipal() {
 
       document.getElementById("cardTotalPacientes").textContent = `Total de Pacientes: ${totalPacientes}`;
 
+      
       // Montar comparativo por sexo com ícones e porcentagens
       const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
       const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
@@ -436,6 +437,8 @@ function abrirDashboardPrincipal() {
         <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
         <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
       `;
+
+      
 
       // Faixa etária mais comum
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
