@@ -424,7 +424,6 @@ function abrirDashboardPrincipal() {
 
       document.getElementById("cardTotalPacientes").textContent = `Total de Pacientes: ${totalPacientes}`;
 
-      
       // Montar comparativo por sexo com ícones e porcentagens
       const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
       const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
@@ -437,7 +436,28 @@ function abrirDashboardPrincipal() {
         <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
         <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
       `;
+const grafico = document.getElementById("grafico-barras-sexo");
 
+grafico.innerHTML = `
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="barra masculino" style="height: ${percMasc}%">
+      <span class="porcentagem-label">${percMasc}%</span>
+    </div>
+    <div class="barra-label">Masculino</div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="barra feminino" style="height: ${percFem}%">
+      <span class="porcentagem-label">${percFem}%</span>
+    </div>
+    <div class="barra-label">Feminino</div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="barra outro" style="height: ${percOutro}%">
+      <span class="porcentagem-label">${percOutro}%</span>
+    </div>
+    <div class="barra-label">Outro</div>
+  </div>
+`;
       
 
       // Faixa etária mais comum
