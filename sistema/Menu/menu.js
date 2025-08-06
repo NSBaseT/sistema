@@ -326,10 +326,14 @@ buscarAjudas(); // chama imediatamente ao carregar
 
 function abrirDashboard() {
   const dashboard = document.getElementById("modal-dashboard");
+  const aniversarianteBox = document.getElementById("modal-aniversariantes");
+
   dashboard.style.display = "block";
+  aniversarianteBox.style.display = "block";
 
   const Nome = "Especialista";
 
+  // --- Gráfico de status dos agendamentos ---
   fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
     .then(res => res.json())
     .then(data => {
@@ -383,11 +387,40 @@ function abrirDashboard() {
         }
       });
     });
+
+  // --- Lista de aniversariantes ---
+  fetch("/pacientes")
+    .then(res => res.json())
+    .then(pacientes => {
+      const hoje = new Date();
+      const diaHoje = hoje.getDate();
+      const mesHoje = hoje.getMonth() + 1;
+
+      const aniversariantes = pacientes.filter(paciente => {
+        const [ano, mes, dia] = paciente.Data_de_Nascimento.split("-");
+        return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
+      });
+
+      const lista = document.getElementById("lista-aniversariantes");
+      lista.innerHTML = ""; // Limpa antes de preencher
+
+      if (aniversariantes.length > 0) {
+        aniversariantes.forEach(p => {
+          const item = document.createElement("li");
+          item.textContent = `🎂 ${p.Nome} (${p.Idade} anos)`;
+          lista.appendChild(item);
+        });
+      } else {
+        const item = document.createElement("li");
+        item.textContent = "Nenhum aniversariante hoje 💤";
+        lista.appendChild(item);
+      }
+    });
 }
 
 function fecharDashboard() {
-  const dashboard = document.getElementById("modal-dashboard");
-  dashboard.style.display = "none";
+  document.getElementById("modal-dashboard").style.display = "none";
+  document.getElementById("modal-aniversariantes").style.display = "none";
 }
 
 function abrirDashboardPrincipal() {
@@ -527,10 +560,10 @@ grafico.innerHTML = `
       });
 
       // Preenche os cards de agendamento
-      document.getElementById("cardConfirmado").textContent = `Confirmados: ${statusCount["Confirmado"]}`;
-      document.getElementById("cardCompareceu").textContent = `Compareceram: ${statusCount["Compareceu"]}`;
-      document.getElementById("cardAguardando").textContent = `Aguardando: ${statusCount["Aguardando Confirmação"]}`;
-      document.getElementById("cardCancelado").textContent = `Cancelados: ${statusCount["Cancelado"]}`;
+      document.getElementById("cardConfirmado").textContent = `${statusCount["Confirmado"]}`;
+      document.getElementById("cardCompareceu").textContent = `${statusCount["Compareceu"]}`;
+      document.getElementById("cardAguardando").textContent = `${statusCount["Aguardando Confirmação"]}`;
+      document.getElementById("cardCancelado").textContent = `${statusCount["Cancelado"]}`;
 
       // Gráfico de pizza agendamento
       const total = Object.values(statusCount).reduce((a, b) => a + b, 0);

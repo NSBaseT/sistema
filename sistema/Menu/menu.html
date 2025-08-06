@@ -222,6 +222,13 @@
             <button title="Mais detalhes" onclick="abrirDashboardPrincipal()" class="botaoMais">+</button>
         </div>
 
+  
+<!-- Container compacto para aniversariantes do dia -->
+<div id="modal-aniversariantes" class="modal-aniversariantes">
+  <h3 style="text-align: center; margin-top: 0;">🎉 Aniversariantes do Dia</h3>
+  <ul id="lista-aniversariantes" style="list-style: none; padding-left: 0; font-size: 90%; margin: 0; text-align: center;"></ul>
+</div>
+
         <div id="modal-dashboard-principal" class="modal-dashboard-principal">
 
             <h3>📈 Dashboard Principal</h3>
@@ -231,8 +238,13 @@
                 <h3 class="dashprincipal">Agendamentos</h3>
                 <div class="agendamento-conteudo">
                     <div class="agendamento-cards">
-                        <div class="card" id="cardConfirmado">Confirmados: --</div>
-                        <div class="card" id="cardCompareceu">Compareceram: --</div>
+                        <div>
+                            <p>Confirmados:</p>
+                            <div class="card" id="cardConfirmado"> --</div>
+                        </div>
+                        <div>
+                            <div class="card" id="cardCompareceu">Compareceram: --</div>
+                        </div>
                         <div class="card" id="cardAguardando">Aguardando: --</div>
                         <div class="card" id="cardCancelado">Cancelados: --</div>
                     </div>

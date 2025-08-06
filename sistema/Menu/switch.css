@@ -590,9 +590,13 @@ a {
   background-color: #0056b3;
 }
 
+.dashcards{
+  margin-bottom: 10%;
+}
+
 .modal-dashboard {
   position: fixed;
-  top: 150px;
+  top: 100px;
   right: 20px;
   width: 22%;
   height: 60%;
@@ -640,6 +644,21 @@ a {
   border: none;
   transition: all 0.2s ease-in-out;
   font-size: 100%;
+}
+
+.modal-aniversariantes {
+  position: relative;
+  margin-top: 50px;
+  margin-left: 139%;
+  margin-right: auto;
+  width: 55%;
+  max-width: 500px; /* Limita largura em telas grandes */
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  z-index: 9999;
+  display: none;
 }
 
 /* dashboard principal*/
