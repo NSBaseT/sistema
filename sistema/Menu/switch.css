@@ -799,11 +799,11 @@ a {
 
 #cardSexoComparativo,
 #cardIdadeComparativo {
-  background-color: rgb(12, 158, 146);
+  background-color: #81cee7;
 }
 
 #cardTotalPacientes {
-  background-color: #27ae60;
+  background-color: #81cee7;
 }
 
 .dashboard-graficos {
@@ -815,10 +815,28 @@ a {
 
 
 
-#cardSexoComparativo {
+ #cardSexoComparativo1 { 
   font-size: 1.1rem;
   font-weight: 400;
-}
+position: relative;
+ left: 31%;
+  width: 320px;
+} 
+
+ #cardSexoComparativo2 { 
+  font-size: 1.1rem;
+  font-weight: 400;
+position: relative;
+ left: 31%;
+  width: 320px;
+  top: -10%;
+  
+} 
+
+ #cardSexoComparativo { 
+  font-size: 1.1rem;
+  font-weight: 400;
+ }
 
 /* Ícones dentro do cardSexoComparativo */
 #cardSexoComparativo .sexo-item {

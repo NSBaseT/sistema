@@ -426,7 +426,9 @@ function fecharDashboard() {
 function abrirDashboardPrincipal() {
   // Fecha modal inicial se aberto
   const modalDashboard = document.getElementById("modal-dashboard");
+  const modalaniversariantes = document.getElementById("modal-aniversariantes")
   if (modalDashboard) modalDashboard.style.display = "none";
+   if (modalaniversariantes) modalaniversariantes.style.display = "none";
 
   // Abre o principal
   const dashboard = document.getElementById("modal-dashboard-principal");
