@@ -590,7 +590,7 @@ a {
   background-color: #0056b3;
 }
 
-.dashcards{
+.dashcards {
   margin-bottom: 10%;
 }
 
@@ -652,7 +652,8 @@ a {
   margin-left: 139%;
   margin-right: auto;
   width: 55%;
-  max-width: 500px; /* Limita largura em telas grandes */
+  max-width: 500px;
+  /* Limita largura em telas grandes */
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -664,11 +665,19 @@ a {
 /* dashboard principal*/
 
 /* CSS */
-.grafic{
-  position:relative;
-  width:350px;
+.grafic {
+  position: relative;
+  width: 350px;
   height: 250px;
 }
+
+.logo1 {
+  position: relative;
+  width: 60px;
+  left: 95%;
+  top: -45px;
+}
+
 .modal-dashboard-principal {
   display: none;
   position: fixed;
@@ -702,35 +711,70 @@ a {
   gap: 30px;
 }
 
-.grafico-status {
-  position:relative !important;
-  all: unset; /* Remove herança de quase tudo */
-  width: 350px !important; 
-  height: 350px !important;
-  display: block; /* Evita comportamento inline */
-  right:15%;
-  top:1%;
+.paciente-cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
 }
-
 
 .agendamento-cards {
 
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  flex: 1;
+  align-items: flex-start;
+  /* Garante que o gráfico fique alinhado com o topo das colunas */
+  gap: 30px;
+  flex-wrap: wrap;
 }
 
-
-
-
-
-.paciente-cards {
+/* Cards agrupados */
+.bloco-cards {
   display: flex;
-
-  gap: 15px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  flex-shrink: 0;
 }
+
+.duas-colunas {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  left: 50%;
+}
+
+.coluna-esquerda,
+.coluna-direita {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cards {
+  width: 120px;
+  height: 100px;
+  background: #2196f3;
+  border-radius: 10px;
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  line-height: 100px;
+  font-weight: bold;
+}
+
+/* Gráfico do lado direito */
+.grafico-status {
+  position: relative;
+  left: 40%;
+  width: 250px !important;
+  /* Diminui o tamanho do gráfico */
+  height: 250px !important;
+  margin: 0;
+  /* Remove espaçamentos */
+  padding: 0;
+  display: block;
+}
+
+
+
 
 .card {
   width: 50%;
@@ -755,7 +799,7 @@ a {
 
 #cardSexoComparativo,
 #cardIdadeComparativo {
-  background-color: #9b59b6;
+  background-color: rgb(12, 158, 146);
 }
 
 #cardTotalPacientes {
@@ -773,7 +817,7 @@ a {
 
 #cardSexoComparativo {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Ícones dentro do cardSexoComparativo */
@@ -899,7 +943,7 @@ a {
 .grafico-barras-sexo {
   display: flex;
   justify-content: space-around;
-  
+
   height: 200px;
   margin-top: 20px;
   gap: 20px;
@@ -908,7 +952,6 @@ a {
 .barra {
   width: 40px;
   position: relative;
-
   border-radius: 5px 5px 0 0;
   display: flex;
   align-items: flex-end;
@@ -918,6 +961,7 @@ a {
 
 .barra.masculino {
   background-color: #4A90E2 !important;
+
 }
 
 .barra.feminino {
@@ -933,7 +977,7 @@ a {
   top: -25px;
   font-size: 14px;
   font-weight: bold;
-  color: #fff;
+  color: rgb(12, 158, 146);
   white-space: nowrap;
 }
 
@@ -941,7 +985,7 @@ a {
   text-align: center;
   margin-top: 5px;
   font-weight: bold;
-  color: #fff;
+  color: rgb(12, 158, 146);
 }
 
 

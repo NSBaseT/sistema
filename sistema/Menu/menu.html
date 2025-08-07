@@ -222,72 +222,105 @@
             <button title="Mais detalhes" onclick="abrirDashboardPrincipal()" class="botaoMais">+</button>
         </div>
 
-  
-<!-- Container compacto para aniversariantes do dia -->
-<div id="modal-aniversariantes" class="modal-aniversariantes">
-  <h3 style="text-align: center; margin-top: 0;">🎉 Aniversariantes do Dia</h3>
-  <ul id="lista-aniversariantes" style="list-style: none; padding-left: 0; font-size: 90%; margin: 0; text-align: center;"></ul>
-</div>
+
+        <!-- Container compacto para aniversariantes do dia -->
+        <div id="modal-aniversariantes" class="modal-aniversariantes">
+            <h3 style="text-align: center; margin-top: 0;">🎉 Aniversariantes do Dia</h3>
+            <ul id="lista-aniversariantes"
+                style="list-style: none; padding-left: 0; font-size: 90%; margin: 0; text-align: center;"></ul>
+        </div>
 
         <div id="modal-dashboard-principal" class="modal-dashboard-principal">
+            <h3 style="color:darkcyan; font-size:xx-large; position:relative; text-align: center; top:-2px;">📈
+                Dashboard Principal</h3>
+            <div>
+                <img class="logo1" src="../Logo/LOGO_03_DEGRADE_300.png" alt="Logo">
+            </div>
 
-            <h3>📈 Dashboard Principal</h3>
 
             <!-- Seção de Agendamentos -->
             <div class="dashboard-section">
-                <h3 class="dashprincipal">Agendamentos</h3>
+                <h3 class="dashprincipal">Agendamentos:</h3>
                 <div class="agendamento-conteudo">
                     <div class="agendamento-cards">
-                        <div>
-                            <p>Confirmados:</p>
-                            <div class="card" id="cardConfirmado"> --</div>
+                        <!-- Container lateral esquerdo com os cards -->
+                        <div class="bloco-cards">
+                            <div class="duas-colunas">
+                                <div class="coluna-esquerda">
+                                    <div>
+                                        <p>Confirmados:</p>
+                                        <div style="background-color: #2ecc71;" class="cards" id="cardConfirmado">2
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p>Compareceram:</p>
+                                        <div class="cards" id="cardCompareceu">1</div>
+                                    </div>
+                                </div>
+
+                                <div class="coluna-direita">
+                                    <div>
+                                        <p>Aguardando:</p>
+                                        <div style="background-color: #f39c12;" class="cards" id="cardAguardando">2
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p>Cancelados:</p>
+                                        <div style="background-color: #e74c3c" class="cards" id="cardCancelado">0</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="card" id="cardCompareceu">Compareceram: --</div>
-                        </div>
-                        <div class="card" id="cardAguardando">Aguardando: --</div>
-                        <div class="card" id="cardCancelado">Cancelados: --</div>
+
+                        <!-- Canvas do gráfico -->
+                        <canvas class="grafico-status" id="statusPieChartPrincipal" width="300" height="300"></canvas>
                     </div>
-                    <canvas class="grafico-status" id="statusPieChartPrincipal" width="400" height="300"></canvas>
+
+
+
                 </div>
 
+                <!-- Seção de Pacientes -->
+                <div class="dashboard-section">
+                    <h3 class="dashprincipal">Pacientes Cadastrados</h3>
+                    <div class="paciente-cards">
+                        <div class="card" id="cardTotalPacientes">Total de Pacientes: --</div>
+                        <div class="card" id="cardSexoComparativo">
+                            <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
+                            <div class="sexo-bar">
+                                <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
+                                <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
+                                <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
+                            </div>
+                        </div>
+                        <div style="background-color:#e7dd51;" class="card" id="cardIdadeComparativo">Comparativo por
+                            Idade</div>
+                    </div>
+                    <div>
+                        <p>Comparativo por Sexo:</p>
+                    </div>
 
+                    <div style="background-color: white;" class="card" id="cardSexoComparativo">
+
+                        <div>
+                            <div id="grafico-barras-sexo" class="grafico-barras-sexo"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button style="left:98%; top:-20.5%; margin:0; width:8%;" class="botaoFechar"
+                    onclick="fecharDashboardPrincipal()">Fechar</button>
             </div>
 
-            <!-- Seção de Pacientes -->
-            <div class="dashboard-section">
-                <h3 class="dashprincipal">Pacientes</h3>
-                <div class="paciente-cards">
-                    <div class="card" id="cardTotalPacientes">Total de Pacientes: --</div>
-                    <div class="card" id="cardSexoComparativo">
-                        <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
-                        <div class="sexo-bar">
-                            <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
-                            <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
-                            <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
-                        </div>
-                    </div>
-                    <div class="card" id="cardIdadeComparativo">Comparativo por Idade</div>
-                </div>
-                <div class="card" id="cardSexoComparativo">
-                    <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
-                    <div id="grafico-barras-sexo" class="grafico-barras-sexo"></div>
-                </div>
-
-            </div>
-
-            <button style="left:98%; top:-20.5%; margin:0; width:8%;" class="botaoFechar"
-                onclick="fecharDashboardPrincipal()">Fechar</button>
-        </div>
 
 
 
 
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="../chat/chat.js"></script>
-        <script src="../global/auth.js"></script>
-        <script type="text/javascript" src="menu.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="../chat/chat.js"></script>
+            <script src="../global/auth.js"></script>
+            <script type="text/javascript" src="menu.js"></script>
 
 
 

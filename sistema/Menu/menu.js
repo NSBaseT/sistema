@@ -495,7 +495,7 @@ grafico.innerHTML = `
 
       // Faixa etária mais comum
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-      document.getElementById("cardIdadeComparativo").textContent = `Faixa Etária mais comum: ${idadePredominante}`;
+      document.getElementById("cardIdadeComparativo").textContent = `Faixa Etária mais comum:  ${idadePredominante}`;
 
       // Gráfico sexo
       const sexoCtx = document.getElementById("sexoChart").getContext("2d");
