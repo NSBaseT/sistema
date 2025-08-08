@@ -282,45 +282,44 @@
 
                 <!-- Seção de Pacientes -->
                 <div class="dashboard-section">
-                    <h3 class="dashprincipal">Pacientes Cadastrados</h3>
+                    <h3 class="dashprincipal">Pacientes Cadastrados</h3> <br>
+
                     <div class="paciente-cards">
-                        <div class="card" id="cardTotalPacientes" style="background-color:#81cee7">Total de Pacientes: --</div>
-                        <div class="card" id="cardSexoComparativo">
-                            <h4 style="margin-bottom: 10px;">Comparativo por Sexo</h4>
-                            <div class="sexo-bar">
-                                <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
-                                <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
-                                <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
-                            </div>
-                        </div>
-                        <div style="background-color:#81cee7;" class="card" id="cardIdadeComparativo">Comparativo por
-                            Idade</div>
-                    </div>
-                    <div id="cardSexoComparativo2">
+                        <!-- Linha 1 - Títulos -->
+                        <p>Total de Pacientes:</p>
                         <p>Comparativo por Sexo:</p>
-                    </div>
+                        <p>Comparativo por Idade:</p>
 
-                    <div style="background-color: white;" class="card" id="cardSexoComparativo1" >
+                        <!-- Linha 2 - Cards principais -->
+                        <div class="card" id="cardTotalPacientes" style="background-color:#81cee7;"></div>
+                        <div class="card" id="cardSexoComparativo" style="width:320px;">
+                            <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
+                            <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
+                            <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
+                        </div>
+                        <div class="card" id="cardIdadeComparativo" style="background-color:#81cee7;"></div>
 
-                        <div>
+                      
+                        <div></div> <!-- vazio na 1ª coluna -->
+                        <div class="card" style="background-color: white; height: auto;" id="cardSexoComparativo1">
                             <div id="grafico-barras-sexo" class="grafico-barras-sexo"></div>
                         </div>
+                        <div></div> <!-- vazio na 3ª coluna -->
                     </div>
-
                 </div>
+
 
                 <button style="left:98%; top:-20.5%; margin:0; width:8%;" class="botaoFechar"
                     onclick="fecharDashboardPrincipal()">Fechar</button>
-            </div>
 
 
 
 
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="../chat/chat.js"></script>
-            <script src="../global/auth.js"></script>
-            <script type="text/javascript" src="menu.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script src="../chat/chat.js"></script>
+                <script src="../global/auth.js"></script>
+                <script type="text/javascript" src="menu.js"></script>
 
 
 

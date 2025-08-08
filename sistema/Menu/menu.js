@@ -457,7 +457,7 @@ function abrirDashboardPrincipal() {
         else idadeBuckets['60+']++;
       });
 
-      document.getElementById("cardTotalPacientes").textContent = `Total de Pacientes: ${totalPacientes}`;
+      document.getElementById("cardTotalPacientes").textContent = `${totalPacientes}`;
 
       // Montar comparativo por sexo com ícones e porcentagens
       const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
@@ -474,19 +474,19 @@ function abrirDashboardPrincipal() {
 const grafico = document.getElementById("grafico-barras-sexo");
 
 grafico.innerHTML = `
-  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
     <div class="barra masculino" style="height: ${percMasc}%">
       <span class="porcentagem-label">${percMasc}%</span>
     </div>
     <div class="barra-label">Masculino</div>
   </div>
-  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="display: flex; flex-direction: column; align-items: center;justify-content: flex-end;">
     <div class="barra feminino" style="height: ${percFem}%">
       <span class="porcentagem-label">${percFem}%</span>
     </div>
     <div class="barra-label">Feminino</div>
   </div>
-  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="display: flex; flex-direction: column; align-items: center;justify-content: flex-end;">
     <div class="barra outro" style="height: ${percOutro}%">
       <span class="porcentagem-label">${percOutro}%</span>
     </div>
@@ -497,7 +497,9 @@ grafico.innerHTML = `
 
       // Faixa etária mais comum
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-      document.getElementById("cardIdadeComparativo").textContent = `Faixa Etária mais comum:  ${idadePredominante}`;
+      document.getElementById("cardIdadeComparativo").innerHTML =
+    `Faixa Etária mais comum:<br>${idadePredominante}`;
+
 
       // Gráfico sexo
       const sexoCtx = document.getElementById("sexoChart").getContext("2d");
