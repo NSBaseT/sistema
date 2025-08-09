@@ -424,28 +424,32 @@ function fecharDashboard() {
 }
 
 function abrirDashboardPrincipal() {
-  // Fecha modal inicial se aberto
+  // Fecha outros modais
   const modalDashboard = document.getElementById("modal-dashboard");
-  const modalaniversariantes = document.getElementById("modal-aniversariantes")
+  const modalaniversariantes = document.getElementById("modal-aniversariantes");
   if (modalDashboard) modalDashboard.style.display = "none";
-   if (modalaniversariantes) modalaniversariantes.style.display = "none";
+  if (modalaniversariantes) modalaniversariantes.style.display = "none";
 
-  // Abre o principal
+  // Abre o modal principal
   const dashboard = document.getElementById("modal-dashboard-principal");
   dashboard.style.display = "block";
 
-  // 1) PACIENTES
+  // Carrega dados iniciais
+  carregarDashboard();
+}
+ 
+
+  // ---------------- 1) PACIENTES ----------------
   fetch("/pacientes")
     .then(res => res.json())
     .then(data => {
       const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
       const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
-
       let totalPacientes = data.length;
 
-    data.forEach(paciente => {
-  const sexo = paciente.Genero || "Outro";
-  const idade = parseInt(paciente.Idade) || 0;
+      data.forEach(paciente => {
+        const sexo = paciente.Genero || "Outro";
+        const idade = parseInt(paciente.Idade) || 0;
 
         if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
         else sexoCount["Outro"]++;
@@ -457,43 +461,40 @@ function abrirDashboardPrincipal() {
         else idadeBuckets['60+']++;
       });
 
-      document.getElementById("cardTotalPacientes").textContent = `${totalPacientes}`;
+      document.getElementById("cardTotalPacientes").textContent = totalPacientes;
 
-      // Montar comparativo por sexo com ícones e porcentagens
       const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
       const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
       const percFem = totalSexo ? ((sexoCount.Feminino / totalSexo) * 100).toFixed(1) : 0;
       const percOutro = totalSexo ? ((sexoCount.Outro / totalSexo) * 100).toFixed(1) : 0;
 
-      // Coloca no card com ícones
       document.getElementById("cardSexoComparativo").innerHTML = `
         <div class="sexo-item"><span class="icon">👦</span> ${percMasc}%</div>
         <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
         <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
       `;
-const grafico = document.getElementById("grafico-barras-sexo");
 
-grafico.innerHTML = `
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-    <div class="barra masculino" style="height: ${percMasc}%">
-      <span class="porcentagem-label">${percMasc}%</span>
-    </div>
-    <div class="barra-label">Masculino</div>
-  </div>
-  <div style="display: flex; flex-direction: column; align-items: center;justify-content: flex-end;">
-    <div class="barra feminino" style="height: ${percFem}%">
-      <span class="porcentagem-label">${percFem}%</span>
-    </div>
-    <div class="barra-label">Feminino</div>
-  </div>
-  <div style="display: flex; flex-direction: column; align-items: center;justify-content: flex-end;">
-    <div class="barra outro" style="height: ${percOutro}%">
-      <span class="porcentagem-label">${percOutro}%</span>
-    </div>
-    <div class="barra-label">Outro</div>
-  </div>
-`;
-      
+      const grafico = document.getElementById("grafico-barras-sexo");
+      grafico.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="barra masculino" style="height:${percMasc}%">
+            <span class="porcentagem-label">${percMasc}%</span>
+          </div>
+          <div class="barra-label">Masculino</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="barra feminino" style="height:${percFem}%">
+            <span class="porcentagem-label">${percFem}%</span>
+          </div>
+          <div class="barra-label">Feminino</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="barra outro" style="height:${percOutro}%">
+            <span class="porcentagem-label">${percOutro}%</span>
+          </div>
+          <div class="barra-label">Outro</div>
+        </div>
+      `;
 
       // Faixa etária mais comum
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
@@ -545,11 +546,44 @@ grafico.innerHTML = `
       });
     });
 
-  // 2) AGENDAMENTOS
-  const Nome = "Especialista";
-  fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
-    .then(res => res.json())
+
+
+function carregarDashboard() {
+  // 1) Pega o mês selecionado no select
+  const selectMes = document.getElementById("mesFiltroCompacto");
+  const mesSelecionado = selectMes ? selectMes.value : ""; // "" = todos
+
+  // 2) Busca agendamentos no backend
+  fetch(`/agendamentos`)
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao buscar agendamentos: ' + res.status);
+      return res.json();
+    })
     .then(data => {
+      // 3) Filtra por mês se foi selecionado
+      if (mesSelecionado) {
+        const mesInt = parseInt(mesSelecionado, 10);
+        data = data.filter(a => {
+          const dateStr = (a.Data_do_Atendimento || "").trim();
+          if (!dateStr) return false;
+
+          let monthPart;
+          if (dateStr.includes('-')) {
+            // Formato YYYY-MM-DD
+            monthPart = dateStr.split('-')[1];
+          } else if (dateStr.includes('/')) {
+            // Formato DD/MM/YYYY
+            monthPart = dateStr.split('/')[1];
+          } else {
+            return false; // formato inválido
+          }
+
+          const mesAgendamento = parseInt(monthPart, 10);
+          return !isNaN(mesAgendamento) && mesAgendamento === mesInt;
+        });
+      }
+
+      // 4) Conta cada status
       const statusCount = {
         "Aguardando Confirmação": 0,
         "Confirmado": 0,
@@ -558,57 +592,84 @@ grafico.innerHTML = `
       };
 
       data.forEach(a => {
-        if (statusCount[a.Status_da_Consulta] !== undefined) {
-          statusCount[a.Status_da_Consulta]++;
-        }
+        const s = a.Status_da_Consulta || "";
+        if (statusCount.hasOwnProperty(s)) statusCount[s]++;
       });
 
-      // Preenche os cards de agendamento
-      document.getElementById("cardConfirmado").textContent = `${statusCount["Confirmado"]}`;
-      document.getElementById("cardCompareceu").textContent = `${statusCount["Compareceu"]}`;
-      document.getElementById("cardAguardando").textContent = `${statusCount["Aguardando Confirmação"]}`;
-      document.getElementById("cardCancelado").textContent = `${statusCount["Cancelado"]}`;
+      // 5) Atualiza cards
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
 
-      // Gráfico de pizza agendamento
+      setText("cardConfirmado", statusCount["Confirmado"] || 0);
+      setText("cardCompareceu", statusCount["Compareceu"] || 0);
+      setText("cardAguardando", statusCount["Aguardando Confirmação"] || 0);
+      setText("cardCancelado", statusCount["Cancelado"] || 0);
+
+      // 6) Monta gráfico de pizza
       const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
       const labels = Object.keys(statusCount);
       const values = labels.map(label =>
-        ((statusCount[label] / total) * 100).toFixed(1)
+        total > 0 ? ((statusCount[label] / total) * 100).toFixed(1) : 0
       );
 
-      const ctx = document.getElementById("statusPieChartPrincipal").getContext("2d");
-      if (window.statusChartPrincipal) window.statusChartPrincipal.destroy();
-      window.statusChartPrincipal = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: labels.map(label => `${label} (${statusCount[label]})`),
-          datasets: [{
-            data: values,
-            backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: (tooltipItem) => {
-                  const label = tooltipItem.label;
-                  const value = tooltipItem.raw;
-                  return `${label}: ${value}%`;
-                }
-              }
-            },
-            title: { display: true, text: 'Distribuição dos Agendamentos' }
-          }
+      const canvas = document.getElementById("statusPieChartPrincipal");
+      if (canvas && canvas.getContext) {
+        const ctx = canvas.getContext("2d");
+
+        // Destroi gráfico antigo para evitar sobreposição
+        if (window.statusChartPrincipal) {
+          window.statusChartPrincipal.destroy();
         }
-      });
+
+        // Cria novo gráfico apenas se houver dados
+        if (total > 0) {
+          window.statusChartPrincipal = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: labels.map(label => `${label} (${statusCount[label]})`),
+              datasets: [{
+                data: values,
+                backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                  callbacks: {
+                    label: (tooltipItem) => {
+                      const label = tooltipItem.label;
+                      const value = tooltipItem.raw;
+                      return `${label}: ${value}%`;
+                    }
+                  }
+                },
+                title: { display: true, text: 'Distribuição dos Agendamentos' }
+              }
+            }
+          });
+        }
+      }
+    })
+    .catch(err => {
+      console.error("Erro carregarDashboard -> agendamentos:", err);
     });
 }
 
+// 7) Fecha dashboard
 function fecharDashboardPrincipal() {
   const dashboardprincipal = document.getElementById("modal-dashboard-principal");
-  dashboardprincipal.style.display = "none";
-  location.reload();
+  if (dashboardprincipal) dashboardprincipal.style.display = "none";
 }
+
+// 8) Atualiza dashboard ao trocar o mês
+document.addEventListener("DOMContentLoaded", () => {
+  const selectMes = document.getElementById("mesFiltroCompacto");
+  if (selectMes) {
+    selectMes.addEventListener("change", carregarDashboard);
+  }
+  carregarDashboard(); // carrega inicialmente
+});
