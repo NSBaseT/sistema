@@ -318,10 +318,6 @@ setInterval(buscarAjudas, 5000);
 buscarAjudas(); // chama imediatamente ao carregar
 
 
-
-
-
-
 // JavaScript atualizado
 
 function abrirDashboard() {
@@ -333,10 +329,45 @@ function abrirDashboard() {
 
   const Nome = "Especialista";
 
-  // --- Gráfico de status dos agendamentos ---
+  // Função para converter Data_do_Atendimento string para Date
+  function parseData(rawData) {
+    if (!rawData) return null;
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(rawData)) {
+      const [dia, mes, ano] = rawData.split('/');
+      return new Date(`${ano}-${mes}-${dia}T00:00:00`);
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}/.test(rawData)) {
+      return new Date(rawData);
+    }
+
+    const dt = new Date(rawData);
+    return isNaN(dt) ? null : dt;
+  }
+
+  // Calcula segunda-feira e domingo da semana atual (GMT-3)
+  const hoje = new Date();
+  const diaSemana = hoje.getDay(); // 0=domingo, 1=segunda ...
+  const inicioSemana = new Date(hoje);
+  inicioSemana.setDate(hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
+  inicioSemana.setHours(0, 0, 0, 0);
+
+  const fimSemana = new Date(inicioSemana);
+  fimSemana.setDate(inicioSemana.getDate() + 6);
+  fimSemana.setHours(23, 59, 59, 999);
+
   fetch(`/agendamentos?especialista=${encodeURIComponent(Nome)}`)
     .then(res => res.json())
     .then(data => {
+      // Filtra só agendamentos da semana atual
+      const agendamentosSemana = data.filter(a => {
+        const dt = parseData(a.Data_do_Atendimento);
+        if (!dt) return false;
+        return dt >= inicioSemana && dt <= fimSemana;
+      });
+
+      // Contagem status
       const statusCount = {
         "Aguardando Confirmação": 0,
         "Confirmado": 0,
@@ -344,20 +375,27 @@ function abrirDashboard() {
         "Cancelado": 0
       };
 
-      data.forEach(a => {
+      agendamentosSemana.forEach(a => {
         if (statusCount[a.Status_da_Consulta] !== undefined) {
           statusCount[a.Status_da_Consulta]++;
         }
       });
 
       const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
+      if (total === 0) {
+        // Pode mostrar uma mensagem no lugar do gráfico, se quiser
+        const ctx = document.getElementById("statusPieChart").getContext("2d");
+        if (window.statusChart) {
+          window.statusChart.destroy();
+        }
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        return;
+      }
+
       const labels = Object.keys(statusCount);
-      const values = labels.map(label =>
-        ((statusCount[label] / total) * 100).toFixed(1)
-      );
+      const values = labels.map(label => Number(((statusCount[label] / total) * 100).toFixed(1)));
 
       const ctx = document.getElementById("statusPieChart").getContext("2d");
-
       if (window.statusChart) window.statusChart.destroy();
 
       window.statusChart = new Chart(ctx, {
@@ -382,13 +420,13 @@ function abrirDashboard() {
                 }
               }
             },
-            title: { display: true, text: 'Distribuição dos Agendamentos' }
+            title: { display: true, text: 'Distribuição dos Agendamentos da Semana' }
           }
         }
       });
     });
 
-  // --- Lista de aniversariantes ---
+  // Mantive sua lógica para aniversariantes
   fetch("/pacientes")
     .then(res => res.json())
     .then(pacientes => {
@@ -402,7 +440,7 @@ function abrirDashboard() {
       });
 
       const lista = document.getElementById("lista-aniversariantes");
-      lista.innerHTML = ""; // Limpa antes de preencher
+      lista.innerHTML = "";
 
       if (aniversariantes.length > 0) {
         aniversariantes.forEach(p => {
@@ -416,11 +454,6 @@ function abrirDashboard() {
         lista.appendChild(item);
       }
     });
-}
-
-function fecharDashboard() {
-  document.getElementById("modal-dashboard").style.display = "none";
-  document.getElementById("modal-aniversariantes").style.display = "none";
 }
 
 function abrirDashboardPrincipal() {
@@ -697,7 +730,7 @@ function carregarDashboard() {
               labels: labels.map(label => `${label} (${statusCount[label]})`),
               datasets: [{
                 data: values,
-                backgroundColor: ['#f39c12', '#3498db', '#2ecc71', '#e74c3c']
+                backgroundColor: ['#f39c12', '#2ecc71', '#3498db','#e74c3c']
               }]
             },
             options: {
