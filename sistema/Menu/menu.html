@@ -237,24 +237,24 @@
                 <img class="logo1" src="../Logo/LOGO_03_DEGRADE_300.png" alt="Logo">
             </div>
 
-        <div style="text-align: center; margin-bottom: 10px;">
-    <label for="mesFiltroCompacto"><strong>Filtrar por mês:</strong></label>
-    <select id="mesFiltroCompacto" onchange="carregarDashboard()">
-        <option value="">Todos</option>
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-    </select>
-</div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <label for="mesFiltroCompacto"><strong>Filtrar por mês:</strong></label>
+                <select id="mesFiltroCompacto" onchange="carregarDashboard()">
+                    <option value="">Todos</option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+            </div>
 
             <!-- Seção de Agendamentos -->
             <div class="dashboard-section">
@@ -301,30 +301,38 @@
                 <!-- Seção de Pacientes -->
                 <div class="dashboard-section">
                     <h3 class="dashprincipal">Pacientes Cadastrados</h3> <br>
-
+                    <div>
+                        <div id="cardTotalPacientes" class="card"
+                            style="background-color:#81cee7; position: relative; width:2%; height:0; left:50% !important;">
+                        </div>
+                    </div>
                     <div class="paciente-cards">
                         <!-- Linha 1 - Títulos -->
-                        <p>Total de Pacientes:</p>
                         <p>Comparativo por Sexo:</p>
                         <p>Comparativo por Idade:</p>
-
-                        <!-- Linha 2 - Cards principais -->
-                        <div class="card" id="cardTotalPacientes" style="background-color:#81cee7;"></div>
-                        <div class="card" id="cardSexoComparativo" style="width:320px;">
+                    </div>
+                    <!-- Linha 2 - Cards principais -->
+                    <div class="paciente-cards">
+                        <div class="card" id="cardSexoComparativo" style="width:320px; top:2% !important;">
                             <div class="sexo-icon masculino" id="masculinoBar" title="Masculino">👦</div>
                             <div class="sexo-icon feminino" id="femininoBar" title="Feminino">👧</div>
                             <div class="sexo-icon outro" id="outroBar" title="Outro">❓</div>
                         </div>
-                        <div class="card" id="cardIdadeComparativo" style="background-color:#81cee7;"></div>
 
-                      
-                        <div></div> <!-- vazio na 1ª coluna -->
-                        <div class="card" style="background-color: white; height: auto; box-shadow: none;" id="cardSexoComparativo1">
-                            <div id="grafico-barras-sexo" class="grafico-barras-sexo"></div>
+                        <div class="card" id="cardIdadeComparativo" style="background-color:#81cee7;"></div>
+                    </div>
+
+                    <div class="paciente-cards">
+                        <div class="card" style="background-color: white; height: auto; box-shadow: none;"
+                            id="cardSexoComparativo1">
+                            <div id="grafico-barras-sexo" class="grafico-barras-sexo" style="position:relative; left: -2% !important;"></div>
                         </div>
-                        <div></div> <!-- vazio na 3ª coluna -->
+                        <div id="barraContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Barras serão inseridas aqui -->
+                        </div>
                     </div>
                 </div>
+
 
 
                 <button style="left:98%; top:-20.5%; margin:0; width:8%;" class="botaoFechar"

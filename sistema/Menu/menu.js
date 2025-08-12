@@ -437,45 +437,49 @@ function abrirDashboardPrincipal() {
   // Carrega dados iniciais
   carregarDashboard();
 }
- 
 
-  // ---------------- 1) PACIENTES ----------------
-  fetch("/pacientes")
-    .then(res => res.json())
-    .then(data => {
-      const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
-      const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
-      let totalPacientes = data.length;
 
-      data.forEach(paciente => {
-        const sexo = paciente.Genero || "Outro";
-        const idade = parseInt(paciente.Idade) || 0;
+// ---------------- 1) PACIENTES ----------------
+fetch("/pacientes")
+  .then(res => res.json())
+  .then(data => {
+    const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
+    const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
+    let totalPacientes = data.length;
 
-        if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
-        else sexoCount["Outro"]++;
+    data.forEach(paciente => {
+      const sexo = paciente.Genero || "Outro";
+      const idade = parseInt(paciente.Idade) || 0;
 
-        if (idade <= 18) idadeBuckets['0-18']++;
-        else if (idade <= 30) idadeBuckets['19-30']++;
-        else if (idade <= 45) idadeBuckets['31-45']++;
-        else if (idade <= 60) idadeBuckets['46-60']++;
-        else idadeBuckets['60+']++;
-      });
+      if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
+      else sexoCount["Outro"]++;
 
-      document.getElementById("cardTotalPacientes").textContent = totalPacientes;
+      if (idade <= 18) idadeBuckets['0-18']++;
+      else if (idade <= 30) idadeBuckets['19-30']++;
+      else if (idade <= 45) idadeBuckets['31-45']++;
+      else if (idade <= 60) idadeBuckets['46-60']++;
+      else idadeBuckets['60+']++;
+    });
 
-      const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
-      const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
-      const percFem = totalSexo ? ((sexoCount.Feminino / totalSexo) * 100).toFixed(1) : 0;
-      const percOutro = totalSexo ? ((sexoCount.Outro / totalSexo) * 100).toFixed(1) : 0;
 
-      document.getElementById("cardSexoComparativo").innerHTML = `
+
+
+
+    document.getElementById("cardTotalPacientes").textContent = totalPacientes;
+
+    const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
+    const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
+    const percFem = totalSexo ? ((sexoCount.Feminino / totalSexo) * 100).toFixed(1) : 0;
+    const percOutro = totalSexo ? ((sexoCount.Outro / totalSexo) * 100).toFixed(1) : 0;
+
+    document.getElementById("cardSexoComparativo").innerHTML = `
         <div class="sexo-item"><span class="icon">👦</span> ${percMasc}%</div>
         <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
         <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
       `;
 
-      const grafico = document.getElementById("grafico-barras-sexo");
-      grafico.innerHTML = `
+    const grafico = document.getElementById("grafico-barras-sexo");
+    grafico.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
           <div class="barra masculino" style="height:${percMasc}%">
             <span class="porcentagem-label">${percMasc}%</span>
@@ -496,59 +500,108 @@ function abrirDashboardPrincipal() {
         </div>
       `;
 
-      // Faixa etária mais comum
+    // Faixa etária mais comum
+    const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+    document.getElementById("cardIdadeComparativo").innerHTML =
+      `Faixa Etária mais comum:<br>${idadePredominante}`;
+    atualizarGrafico(idadeBuckets);
+
+
+    function atualizarGrafico(idadeBuckets) {
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-      document.getElementById("cardIdadeComparativo").innerHTML =
-    `Faixa Etária mais comum:<br>${idadePredominante}`;
+      document.getElementById("cardIdadeComparativo").textContent = idadePredominante;
+
+      const barraContainer = document.getElementById("barraContainer");
+      barraContainer.innerHTML = '';
+
+      const maxValor = Math.max(...Object.values(idadeBuckets));
+
+      Object.entries(idadeBuckets).forEach(([faixa, valor]) => {
+        const barraWrapper = document.createElement("div");
+        barraWrapper.style.display = "flex";
+        barraWrapper.style.alignItems = "center";
+        barraWrapper.style.gap = "20px";
+
+        // Label faixa etária (fixo largura)
+        const label = document.createElement("div");
+        label.style.width = "120px";
+        label.style.fontWeight = "600";
+        label.textContent = faixa;
+
+        // Barra - flexível, cresce de acordo com o valor
+        const barra = document.createElement("div");
+        barra.style.height = "20px";
+        barra.style.backgroundColor = "#f89c23ff";
+        barra.style.borderRadius = "8px";
+        const larguraPercentual = (valor / maxValor) * 100;
+        barra.style.width = larguraPercentual + "%";
+        barra.style.minWidth = valor > 0 ? "35px" : "0"; //       // não ultrapassa o container
 
 
-      // Gráfico sexo
-      const sexoCtx = document.getElementById("sexoChart").getContext("2d");
-      if (window.sexoChart) window.sexoChart.destroy();
-      window.sexoChart = new Chart(sexoCtx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(sexoCount),
-          datasets: [{
-            data: Object.values(sexoCount),
-            backgroundColor: ['#3498db', '#e74c3c', '#9b59b6']
-          }]
-        },
-        options: {
-          plugins: {
-            title: { display: true, text: 'Distribuição por Sexo' },
-            legend: { position: 'bottom' }
-          }
-        }
+        // Valor numérico (fixo largura)
+        const valorLabel = document.createElement("div");
+        valorLabel.style.width = "20px";
+        valorLabel.style.fontWeight = "700";
+        valorLabel.textContent = valor;
+
+        barraWrapper.appendChild(label);
+        barraWrapper.appendChild(barra);
+        barraWrapper.appendChild(valorLabel);
+
+        barraContainer.appendChild(barraWrapper);
       });
 
-      // Gráfico idade
-      const idadeCtx = document.getElementById("idadeChart").getContext("2d");
-      if (window.idadeChart) window.idadeChart.destroy();
-      window.idadeChart = new Chart(idadeCtx, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(idadeBuckets),
-          datasets: [{
-            label: 'Pacientes',
-            data: Object.values(idadeBuckets),
-            backgroundColor: '#2ecc71'
-          }]
-        },
-        options: {
-          plugins: {
-            title: { display: true, text: 'Distribuição por Faixa Etária' }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
+    }
+
+
+
+    // Gráfico sexo
+    const sexoCtx = document.getElementById("sexoChart").getContext("2d");
+    if (window.sexoChart) window.sexoChart.destroy();
+    window.sexoChart = new Chart(sexoCtx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(sexoCount),
+        datasets: [{
+          data: Object.values(sexoCount),
+          backgroundColor: ['#3498db', '#e74c3c', '#9b59b6']
+        }]
+      },
+      options: {
+        plugins: {
+          title: { display: true, text: 'Distribuição por Sexo' },
+          legend: { position: 'bottom' }
         }
-      });
+      }
     });
 
+    // Gráfico idade
+    const idadeCtx = document.getElementById("idadeChart").getContext("2d");
+    if (window.idadeChart) window.idadeChart.destroy();
+    window.idadeChart = new Chart(idadeCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(idadeBuckets),
+        datasets: [{
+          label: 'Pacientes',
+          data: Object.values(idadeBuckets),
+          backgroundColor: '#2ecc71'
+        }]
+      },
+      options: {
+        plugins: {
+          title: { display: true, text: 'Distribuição por Faixa Etária' }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  });
 
 
-    
+
+
 //filtro....................................................................
 function carregarDashboard() {
   // 1) Pega o mês selecionado no select
