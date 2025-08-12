@@ -548,6 +548,8 @@ function abrirDashboardPrincipal() {
 
 
 
+    
+//filtro....................................................................
 function carregarDashboard() {
   // 1) Pega o mês selecionado no select
   const selectMes = document.getElementById("mesFiltroCompacto");

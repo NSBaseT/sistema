@@ -938,14 +938,7 @@ a {
   -webkit-background-clip: text;
 }
 
-.sexo-barra-vertical {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  height: 200px;
-  padding: 10px 0;
-  gap: 10px;
-}
+
 
 .barra-vertical-item {
   display: flex;
@@ -969,22 +962,6 @@ a {
   overflow: hidden;
 }
 
-.barra-preenchida {
-  width: 100%;
-  border-radius: 5px 5px 0 0;
-}
-
-.barra-preenchida.masculino {
-  background-color: #4A90E2 !important;
-}
-
-.barra-preenchida.feminino {
-  background-color: #E91E63 !important;
-}
-
-.barra-preenchida.outro {
-  background-color: #9E9E9E !important;
-}
 
 .icon {
   font-size: 24px;
