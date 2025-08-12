@@ -475,14 +475,21 @@ fetch("/pacientes")
     const alturaFem = percFem * 2;
     const alturaOutro = percOutro * 2;
 
-    document.getElementById("cardSexoComparativo").innerHTML = `
-        <div class="sexo-item"><span class="icon">👦</span> ${percMasc}%</div>
-        <div class="sexo-item"><span class="icon">👧</span> ${percFem}%</div>
-        <div class="sexo-item"><span class="icon">❓</span> ${percOutro}%</div>
-      `;
+   document.getElementById("cardSexoComparativo").innerHTML = `
+  <div class="sexo-item has-tooltip" title="Masculino">
+    <span class="icon">👦</span> ${percMasc}%
+  </div>
+  <div class="sexo-item has-tooltip" title="Feminino">
+    <span class="icon">👧</span> ${percFem}%
+  </div>
+  <div class="sexo-item has-tooltip" title="Outro">
+    <span class="icon">❓</span> ${percOutro}%
+  </div>
+`;
+
 
     const grafico = document.getElementById("grafico-barras-sexo");
-    console.log(percMasc, percFem, percOutro);
+    
     grafico.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
           <div class="barra masculino" style="height:${alturaMasc}px">
@@ -507,7 +514,7 @@ fetch("/pacientes")
     // Faixa etária mais comum
     const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
     document.getElementById("cardIdadeComparativo").innerHTML =
-      `Faixa Etária mais comum:<br>${idadePredominante}`;
+      `${idadePredominante}`;
     atualizarGrafico(idadeBuckets);
 
 
