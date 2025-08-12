@@ -468,9 +468,12 @@ fetch("/pacientes")
     document.getElementById("cardTotalPacientes").textContent = totalPacientes;
 
     const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
-    const percMasc = totalSexo ? ((sexoCount.Masculino / totalSexo) * 100).toFixed(1) : 0;
-    const percFem = totalSexo ? ((sexoCount.Feminino / totalSexo) * 100).toFixed(1) : 0;
-    const percOutro = totalSexo ? ((sexoCount.Outro / totalSexo) * 100).toFixed(1) : 0;
+    const percMasc = totalSexo ? parseFloat(((sexoCount.Masculino / totalSexo) * 100).toFixed(1)) : 0;
+    const percFem = totalSexo ? parseFloat(((sexoCount.Feminino / totalSexo) * 100).toFixed(1)) : 0;
+    const percOutro = totalSexo ? parseFloat(((sexoCount.Outro / totalSexo) * 100).toFixed(1)) : 0;
+    const alturaMasc = percMasc * 2; // 5px por unidade percentual
+    const alturaFem = percFem * 2;
+    const alturaOutro = percOutro * 2;
 
     document.getElementById("cardSexoComparativo").innerHTML = `
         <div class="sexo-item"><span class="icon">👦</span> ${percMasc}%</div>
@@ -479,21 +482,22 @@ fetch("/pacientes")
       `;
 
     const grafico = document.getElementById("grafico-barras-sexo");
+    console.log(percMasc, percFem, percOutro);
     grafico.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="barra masculino" style="height:${percMasc}%">
+          <div class="barra masculino" style="height:${alturaMasc}px">
             <span class="porcentagem-label">${percMasc}%</span>
           </div>
           <div class="barra-label">Masculino</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="barra feminino" style="height:${percFem}%">
+          <div class="barra feminino" style="height:${ alturaFem}px">
             <span class="porcentagem-label">${percFem}%</span>
           </div>
           <div class="barra-label">Feminino</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="barra outro" style="height:${percOutro}%">
+          <div class="barra outro" style="height:${alturaOutro}px">
             <span class="porcentagem-label">${percOutro}%</span>
           </div>
           <div class="barra-label">Outro</div>
