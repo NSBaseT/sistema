@@ -53,7 +53,17 @@ let Usuario = ''
     thumbnail.src = data.foto
     thumbnail.style.display = 'block';
 
-    abrirDashboard()
+
+    if (data.Secretaria) {
+      const dashboard = document.getElementById("modal-dashboard");
+      dashboard.parentNode.removeChild(dashboard);
+      abrirAniversariantes()
+
+    } else {
+
+      abrirDashboard()
+    }
+
 
   })().catch(console.error)
 
@@ -365,13 +375,10 @@ function parseData(rawData) {
 
 function abrirDashboard() {
   const dashboard = document.getElementById("modal-dashboard");
-  const aniversarianteBox = document.getElementById("modal-aniversariantes");
-
   dashboard.style.display = "block";
-  aniversarianteBox.style.display = "block";
 
   const hoje = new Date();
-  const diaSemana = hoje.getDay(); // 0=domingo, 1=segunda ...
+  const diaSemana = hoje.getDay();
   const inicioSemana = new Date(hoje);
   inicioSemana.setDate(hoje.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
   inicioSemana.setHours(0, 0, 0, 0);
@@ -385,7 +392,6 @@ function abrirDashboard() {
     .then(data => {
       const especialistaLogado = Usuario.toLowerCase();
 
-      // Filtra agendamentos do especialista logado e da semana atual
       const agendamentosFiltrados = data.filter(a => {
         if (!a.Especialista) return false;
         const dt = parseData(a.Data_do_Atendimento);
@@ -411,7 +417,6 @@ function abrirDashboard() {
       });
 
       const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
-
       const ctx = document.getElementById("statusPieChart").getContext("2d");
       if (window.statusChart) window.statusChart.destroy();
 
@@ -451,43 +456,48 @@ function abrirDashboard() {
       });
     });
 
-  // Carregar aniversariantes (mesmo código seu)
-  fetch("/pacientes")
-  .then(res => res.json())
-  .then(pacientes => {
-    const especialistaLogado = Usuario.toLowerCase();
-
-    // Filtra pacientes só do especialista logado
-    const pacientesDoEspecialista = pacientes.filter(p => 
-      p.Especialista && p.Especialista.toLowerCase() === especialistaLogado
-    );
-
-    const hoje = new Date();
-    const diaHoje = hoje.getDate();
-    const mesHoje = hoje.getMonth() + 1;
-
-    const aniversariantes = pacientesDoEspecialista.filter(paciente => {
-      const [ano, mes, dia] = paciente.Data_de_Nascimento.split("-");
-      return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
-    });
-
-    const lista = document.getElementById("lista-aniversariantes");
-    lista.innerHTML = "";
-
-    if (aniversariantes.length > 0) {
-      aniversariantes.forEach(p => {
-        const item = document.createElement("li");
-        item.textContent = `🎂 ${p.Nome} (${p.Idade} anos)`;
-        lista.appendChild(item);
-      });
-    } else {
-      const item = document.createElement("li");
-      item.textContent = "Nenhum aniversariante hoje 💤";
-      lista.appendChild(item);
-    }
-  });
-
+  // Abre também aniversariantes junto com dashboard
+  abrirAniversariantes();
 }
+
+function abrirAniversariantes() {
+  const aniversarianteBox = document.getElementById("modal-aniversariantes");
+  aniversarianteBox.style.display = "block";
+
+  fetch("/pacientes")
+    .then(res => res.json())
+    .then(pacientes => {
+      const especialistaLogado = Usuario.toLowerCase();
+      const pacientesDoEspecialista = pacientes.filter(p =>
+        p.Especialista && p.Especialista.toLowerCase() === especialistaLogado
+      );
+
+      const hoje = new Date();
+      const diaHoje = hoje.getDate();
+      const mesHoje = hoje.getMonth() + 1;
+
+      const aniversariantes = pacientesDoEspecialista.filter(paciente => {
+        const [ano, mes, dia] = paciente.Data_de_Nascimento.split("-");
+        return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
+      });
+
+      const lista = document.getElementById("lista-aniversariantes");
+      lista.innerHTML = "";
+
+      if (aniversariantes.length > 0) {
+        aniversariantes.forEach(p => {
+          const item = document.createElement("li");
+          item.textContent = `🎂 ${p.Nome} (${p.Idade} anos)`;
+          lista.appendChild(item);
+        });
+      } else {
+        const item = document.createElement("li");
+        item.textContent = "Nenhum aniversariante hoje 💤";
+        lista.appendChild(item);
+      }
+    });
+}
+
 
 async function iniciarDashboard() {
   try {
@@ -554,7 +564,7 @@ fetch("/pacientes")
     const alturaFem = percFem * 2;
     const alturaOutro = percOutro * 2;
 
-   document.getElementById("cardSexoComparativo").innerHTML = `
+    document.getElementById("cardSexoComparativo").innerHTML = `
   <div class="sexo-item has-tooltip" title="Masculino">
     <span class="icon">👦</span> ${percMasc}%
   </div>
@@ -568,7 +578,7 @@ fetch("/pacientes")
 
 
     const grafico = document.getElementById("grafico-barras-sexo");
-    
+
     grafico.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
           <div class="barra masculino" style="height:${alturaMasc}px">
@@ -577,7 +587,7 @@ fetch("/pacientes")
           <div class="barra-label">Masculino</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="barra feminino" style="height:${ alturaFem}px">
+          <div class="barra feminino" style="height:${alturaFem}px">
             <span class="porcentagem-label">${percFem}%</span>
           </div>
           <div class="barra-label">Feminino</div>
@@ -776,7 +786,7 @@ function carregarDashboard() {
               labels: labels.map(label => `${label} (${statusCount[label]})`),
               datasets: [{
                 data: values,
-                backgroundColor: ['#f39c12', '#2ecc71', '#3498db','#e74c3c']
+                backgroundColor: ['#f39c12', '#2ecc71', '#3498db', '#e74c3c']
               }]
             },
             options: {
