@@ -7,16 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fluxo de Caixa</title>
 
-  <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="fluxo.css">
   <link rel="stylesheet" href="../chat/chat.css">
   <link rel="shortcut icon" href="../Logo/LOGO_02_DEGRADE.png" type="image/x-icon">
   <link rel="stylesheet" href="../global/font.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <iframe class="unstyled" id="draggable-container"
-    src="https://crispy-orbit-g4xjqpjqwr9g2vxpq-3001.app.github.dev/sistema/chat/chat.html" height="50" ;
-    width="50"></iframe>
 
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <iframe class="unstyled" id="draggable-container"
+    src="https://crispy-orbit-g4xjqpjqwr9g2vxpq-3001.app.github.dev/sistema/chat/chat.html"
+    height="50" width="50"></iframe>
 </head>
 
 <body>
@@ -25,18 +28,17 @@
       <div class="escrita">
         <h1>
           <a href="../meuPerfil/meuPerfil.html">
-
             <div id="meuUsuario"
               style="flex: 1 1 0; color: white; font-size: 16px; font-family: Nunito; font-weight: 400; word-wrap: break-word">
-              <i style="font-size:large; align-items: center; " class="bi bi-person-square"></i>
+              <i style="font-size:large; align-items: center;" class="bi bi-person-square"></i>
               <br>
               <p style="text-align: center;" id="userGreeting"></p>
               <h4 style="font-size: xx-small;margin: 0; color: aqua; text-align: center;">Editar perfil</h4>
             </div>
+          </a>
         </h1>
 
-
-        <h4> </a>
+        <h4>
           <a href="../cadastro_prof/cadastro_prof.html">
             <i class="bi bi-person-lock"></i> Cadastro do Profissional</a>
         </h4>
@@ -64,35 +66,29 @@
 
       <div class="contato">
         <div> Contato </div>
-
-
         <div>
           <a href="https://wa.me/message/6JNNR37HJXYQM1">
-            <i class="bi bi-whatsapp"></i><span>
-            </span>(19) 98149-4345</a>
+            <i class="bi bi-whatsapp"></i><span></span>(19) 98149-4345</a>
         </div>
-
         <div>
           <a href="https://www.instagram.com/ns_basetech?igsh=eXZ6aDl4dWt5NmRj">
             <i class="bi bi-instagram"></i><span style="margin-left: 5px;"></span>@ns_basetech </a>
         </div>
       </div>
- <div>
-                <!-- Botão flutuante -->
-                <button id="ajudaBtn" title="Ajuda">
-                    <i class="bi bi-question-circle"></i>
-                </button>
-            </div>
 
+      <div>
+        <!-- Botão flutuante -->
+        <button id="ajudaBtn" title="Ajuda">
+          <i class="bi bi-question-circle"></i>
+        </button>
+      </div>
     </main>
+
     <label class="switch">
       <input type="checkbox" id="ch-side">
       <span class="slider"></span>
     </label>
   </div>
-
-
-
 
   <div class="container">
     <div class="heading">Fluxo de Caixa</div>
@@ -100,26 +96,22 @@
     <div class="hr-customizado"></div>
 
     <main>
-      <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_flx"></input>
+      <input class="voltar-button" type="button" value="Voltar" id="btn_voltar_flx">
       <br>
       <div id="tituloFluxo" style="font-weight: bold; font-size: 15px; margin-bottom: 10px;"></div>
-      
+
       <div class="resume">
         <div class="dementrada">
-          Entradas: R$
-          <span class="incomes">0,00</span>
+          Entradas: R$ <span class="incomes">0,00</span>
         </div>
 
         <div class="demsaida">
-          Saídas: R$
-          <span class="expenses">0,00</span>
+          Saídas: R$ <span class="expenses">0,00</span>
         </div>
 
         <div class="demtotal">
-          Total: R$
-          <span class="total">0,00</span>
+          Total: R$ <span class="total">0,00</span>
         </div>
-
       </div>
 
       <div class="resume">
@@ -154,8 +146,6 @@
       </div>
 
       <div class="resume">
-
-
         <div class="divType">
           <label for="meses">Mês</label>
           <select id="meses" name="meses" onchange="loadItens()">
@@ -175,7 +165,6 @@
           </select>
         </div>
 
-
         <div class="divDesc">
           <label for="selected-year">Ano</label>
           <input type="number" id="selected-year" placeholder="Todos" onchange="loadItens()" />
@@ -189,7 +178,10 @@
         </div>
       </div>
 
-
+      <!-- Área do gráfico -->
+      <div style="width: 80%; margin: auto; padding: 20px;">
+        <canvas id="fluxoCaixaChart"></canvas>
+      </div>
 
       <div class="containertabela">
         <div class="divTable">
@@ -203,57 +195,51 @@
                 <th class="columnAction"></th>
               </tr>
             </thead>
-            <tbody>
-            </tbody>
-
+            <tbody></tbody>
           </table>
         </div>
-
       </div>
+
       <button onclick="toggleChat()" class="open-chat-btn1" id="open-chat-btn1">
         <i class="bi bi-chat-dots"></i>
       </button>
     </main>
 
-      <!-- Popup de ajuda -->
-        <div id="ajudaPopup" style="display: none;">
-            <div class="popup-fechar" onclick="fecharAjuda()">×</div>
+    <!-- Popup de ajuda -->
+    <div id="ajudaPopup" style="display: none;">
+      <div class="popup-fechar" onclick="fecharAjuda()">×</div>
 
-            <div class="ajuda-form">
+      <div class="ajuda-form">
+        <label for="tela">Local da ocorrência:</label>
+        <select id="tela">
+          <option value="">Selecione</option>
+          <option value="Cadastro de paciente">Cadastro de Paciente</option>
+          <option value="Fluxo de caixa">Fluxo de Caixa</option>
+          <option value="Agendamento">Agendamento</option>
+          <option value="Lista de consulta">Lista de Consulta</option>
+          <option value="Lista de paciente">Lista de Paciente</option>
+          <option value="Chat">Chat</option>
+          <option value="Perfil">Perfil</option>
+        </select>
 
-                <label for="tela">Local da ocorrência:</label>
-                <select id="tela">
-                    <option value="">Selecione</option>
-                    <option value="Cadastro de paciente">Cadastro de Paciente</option>
-                    <option value="Fluxo de caixa">Fluxo de Caixa</option>
-                    <option value="Agendamento">Agendamento</option>
-                    <option value="Lista de consulta">Lista de Consulta</option>
-                    <option value="Lista de paciente">Lista de Paciente</option>
-                    <option value="Chat">Chat</option>
-                    <option value="Perfil">Perfil</option>
-                </select>
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
 
-                <label for="descricao">Descrição:</label>
-                <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..."></textarea>
+        <button type="button" onclick="enviarAjuda()">Enviar</button>
+      </div>
 
-                <button type="button" onclick="enviarAjuda()">Enviar</button>
-            </div>
-
-            <div class="ajuda-lista">
-                <div class="lista-titulo">Minhas Solicitações</div>
-                <p>Buscar por:</p>
-                <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
-                <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
-                <input type="text" id="filtroData" placeholder="Data..." />
-                <div id="listaMensagens">
-                    <!-- Mensagens aparecerão aqui -->
-                </div>
-            </div>
-        </div>
+      <div class="ajuda-lista">
+        <div class="lista-titulo">Minhas Solicitações</div>
+        <p>Buscar por:</p>
+        <input type="text" id="filtroTela" placeholder="Local da Ocorrência..." />
+        <input type="text" id="filtroTicket" placeholder="Número do Chamado..." />
+        <input type="text" id="filtroData" placeholder="Data..." />
+        <div id="listaMensagens"></div>
+      </div>
+    </div>
 
     <script src="../global/auth.js"></script>
     <script src="fluxo.js"></script>
   </div>
 </body>
-
 </html>
