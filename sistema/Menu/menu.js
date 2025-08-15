@@ -485,7 +485,7 @@ function abrirAniversariantes() {
                 aniversariantes.forEach(p => {
                     const item = document.createElement("li");
                     item.textContent = isSecretaria
-                        ? `🎂 ${p.Nome} (${p.Idade} anos) — Especialista: ${p.Especialista}`
+                        ? `🎂 ${p.Nome} (${p.Idade} anos) — Espec.: ${p.Especialista}`
                         : `🎂 ${p.Nome} (${p.Idade} anos)`;
                     lista.appendChild(item);
                 });

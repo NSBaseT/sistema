@@ -596,7 +596,7 @@ a {
 
 .modal-dashboard {
   position: fixed;
-  top: 100px;
+  top: 225px;
   right: 20px;
   width: 22%;
   height: 60%;
@@ -648,17 +648,17 @@ a {
 
 .modal-aniversariantes {
   position: relative;
-  margin-top: 50px;
-  margin-left: 139%;
+  bottom: 300px;
+  margin-left: 138.5%;
   margin-right: auto;
-  width: 55%;
+  width: 56%;
   max-width: 500px;
   /* Limita largura em telas grandes */
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   padding: 16px;
-  z-index: 9999;
+  z-index: 1;
   display: none;
 }
 
