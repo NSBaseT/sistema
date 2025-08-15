@@ -1,6 +1,9 @@
 verificaAutenticado()
 verificaUsuarioLogado()
 
+let isSecretaria = false; // global
+let Usuario = '';
+let Nome = '';
 
 document.getElementById("btn_cadastro").addEventListener("click", () => {
   window.location.href = '../Cadastro_pacientes/Cadastro.html'
@@ -23,8 +26,7 @@ document.getElementById("open-chat-btn1").addEventListener("click", () => {
   window.location.href = '../chat/chat.html'
 })
 
-let Nome = '';
-let Usuario = ''
+
 
 
   ; (async () => {
@@ -127,11 +129,6 @@ window.addEventListener("message", (event) => {
 document.getElementById("open-chat-btn1").addEventListener("click", () => {
   window.location.href = '../chat/chat.html'
 })
-
-
-
-
-
 
 //botao ajuda
 
@@ -336,27 +333,24 @@ Usuario = "";
 Nome = "";
 
 async function verificaUsuarioLogado() {
-  const token = localStorage.getItem(CHAVE); // ajuste o nome da chave se for diferente
+    const token = localStorage.getItem(CHAVE);
+    const response = await fetch('/verify', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+    });
+    if (!response.ok) throw new Error("Falha na autenticação");
+    const data = await response.json();
 
-  const response = await fetch('/verify', {
-    body: JSON.stringify({ token }),
-    method: 'POST',
-    headers: { "Content-Type": "application/json" }
-  });
-
-  if (!response.ok) {
-    throw new Error("Falha na autenticação");
-  }
-
-  const data = await response.json();
-
-  if (data.Secretaria) {
-    Usuario = "Sandra";
-    Nome = "Sandra";
-  } else {
-    Usuario = data.Usuario;
-    Nome = data.Nome;
-  }
+    if (data.Secretaria) {
+        isSecretaria = true; // importante: seta a flag global
+        Usuario = null;
+        Nome = null;
+    } else {
+        isSecretaria = false;
+        Usuario = data.Usuario;
+        Nome = data.Nome;
+    }
 }
 
 function parseData(rawData) {
@@ -463,43 +457,46 @@ function abrirDashboard() {
 }
 
 function abrirAniversariantes() {
-  const aniversarianteBox = document.getElementById("modal-aniversariantes");
-  aniversarianteBox.style.display = "block";
+    const aniversarianteBox = document.getElementById("modal-aniversariantes");
+    aniversarianteBox.style.display = "block";
 
-  fetch("/pacientes")
-    .then(res => res.json())
-    .then(pacientes => {
-      const especialistaLogado = Usuario.toLowerCase();
-      const pacientesDoEspecialista = pacientes.filter(p =>
-        p.Especialista && p.Especialista.toLowerCase() === especialistaLogado
-      );
+    fetch("/pacientes")
+        .then(res => res.json())
+        .then(pacientes => {
+            // Se for secretária, pega todos os pacientes
+            const pacientesFiltrados = isSecretaria
+                ? pacientes
+                : pacientes.filter(p => p.Especialista && p.Especialista.toLowerCase() === Usuario.toLowerCase());
 
-      const hoje = new Date();
-      const diaHoje = hoje.getDate();
-      const mesHoje = hoje.getMonth() + 1;
+            const hoje = new Date();
+            const diaHoje = hoje.getDate();
+            const mesHoje = hoje.getMonth() + 1;
 
-      const aniversariantes = pacientesDoEspecialista.filter(paciente => {
-        const [ano, mes, dia] = paciente.Data_de_Nascimento.split("-");
-        return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
-      });
+            const aniversariantes = pacientesFiltrados.filter(p => {
+                if (!p.Data_de_Nascimento) return false;
+                const [ano, mes, dia] = p.Data_de_Nascimento.split("-");
+                return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
+            });
 
-      const lista = document.getElementById("lista-aniversariantes");
-      lista.innerHTML = "";
+            const lista = document.getElementById("lista-aniversariantes");
+            lista.innerHTML = "";
 
-      if (aniversariantes.length > 0) {
-        aniversariantes.forEach(p => {
-          const item = document.createElement("li");
-          item.textContent = `🎂 ${p.Nome} (${p.Idade} anos)`;
-          lista.appendChild(item);
-        });
-      } else {
-        const item = document.createElement("li");
-        item.textContent = "Nenhum aniversariante hoje 💤";
-        lista.appendChild(item);
-      }
-    });
+            if (aniversariantes.length > 0) {
+                aniversariantes.forEach(p => {
+                    const item = document.createElement("li");
+                    item.textContent = isSecretaria
+                        ? `🎂 ${p.Nome} (${p.Idade} anos) — Especialista: ${p.Especialista}`
+                        : `🎂 ${p.Nome} (${p.Idade} anos)`;
+                    lista.appendChild(item);
+                });
+            } else {
+                const item = document.createElement("li");
+                item.textContent = "Nenhum aniversariante hoje 💤";
+                lista.appendChild(item);
+            }
+        })
+        .catch(err => console.error("Erro ao carregar pacientes:", err));
 }
-
 
 async function iniciarDashboard() {
   try {
