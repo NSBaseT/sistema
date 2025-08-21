@@ -823,52 +823,57 @@ async function gerarPDFDashboard() {
   // Cria container temporário invisível
   const tempContainer = document.createElement("div");
   tempContainer.style.position = "absolute";
-  tempContainer.style.left = "-9999px"; // fora da tela
+  tempContainer.style.left = "-9999px";
   tempContainer.style.width = "800px";
   tempContainer.style.background = "#fff";
   tempContainer.style.padding = "20px";
   tempContainer.style.boxSizing = "border-box";
+  tempContainer.style.fontFamily = "Arial, sans-serif";
   document.body.appendChild(tempContainer);
 
-  // Título e data
+  // ----------------- TÍTULO E ESPECIALISTA -----------------
   const titulo = document.createElement("h2");
   titulo.textContent = "Relatório Resumido do Dashboard";
   titulo.style.textAlign = "center";
+  titulo.style.marginBottom = "10px";
+  titulo.style.fontSize = "18pt";
   tempContainer.appendChild(titulo);
 
   const dataAtual = document.createElement("p");
-dataAtual.textContent = "Dr.(a) " + Usuario + " - " + new Date().toLocaleDateString();
-dataAtual.style.textAlign = "center";
-dataAtual.style.marginBottom = "20px";
-tempContainer.appendChild(dataAtual);
-
+  dataAtual.textContent = `Dr.(a) ${Usuario} - ${new Date().toLocaleDateString()}`;
+  dataAtual.style.textAlign = "center";
+  dataAtual.style.marginBottom = "20px";
+  dataAtual.style.fontSize = "12pt";
+  tempContainer.appendChild(dataAtual);
 
   // ----------------- TABELA RESUMO -----------------
   const tabela = document.createElement("table");
   tabela.style.width = "100%";
   tabela.style.borderCollapse = "collapse";
   tabela.style.marginBottom = "20px";
+  tabela.style.fontSize = "11pt";
 
   const addRow = (label, value) => {
     const tr = document.createElement("tr");
 
     const tdLabel = document.createElement("td");
     tdLabel.textContent = label;
-    tdLabel.style.border = "1px solid #000";
-    tdLabel.style.padding = "6px";
+    tdLabel.style.borderBottom = "1px solid #000";
+    tdLabel.style.padding = "6px 10px";
     tdLabel.style.fontWeight = "600";
+    tdLabel.style.textAlign = "left";
 
     const tdValue = document.createElement("td");
     tdValue.textContent = value;
-    tdValue.style.border = "1px solid #000";
-    tdValue.style.padding = "6px";
+    tdValue.style.borderBottom = "1px solid #000";
+    tdValue.style.padding = "6px 10px";
+    tdValue.style.textAlign = "right";
 
     tr.appendChild(tdLabel);
     tr.appendChild(tdValue);
     tabela.appendChild(tr);
   };
 
-  // Valores do dashboard
   const totalPacientes = document.getElementById("cardTotalPacientes")?.textContent || "0";
   const sexoComparativo = document.getElementById("cardSexoComparativo")?.textContent || "";
   const idadePredominante = document.getElementById("cardIdadeComparativo")?.textContent || "";
@@ -890,21 +895,28 @@ tempContainer.appendChild(dataAtual);
 
   // ----------------- GRÁFICOS PIZZA -----------------
   const canvasList = [
-    document.getElementById("sexoChart"),
-    document.getElementById("statusPieChartPrincipal") // supondo que você tenha esse canvas
+    { canvas: document.getElementById("sexoChart"), titulo: "Distribuição por Sexo" },
+    { canvas: document.getElementById("statusPieChartPrincipal"), titulo: "Status dos Agendamentos" }
   ];
 
-  for (let canvas of canvasList) {
+  canvasList.forEach(({ canvas, titulo }) => {
     if (canvas) {
+      const tituloGraf = document.createElement("p");
+      tituloGraf.textContent = titulo;
+      tituloGraf.style.fontWeight = "600";
+      tituloGraf.style.textAlign = "center";
+      tituloGraf.style.margin = "10px 0 5px 0";
+      tempContainer.appendChild(tituloGraf);
+
       const imgData = canvas.toDataURL("image/png");
       const img = document.createElement("img");
       img.src = imgData;
-      img.style.width = "350px";
+      img.style.width = "300px";
       img.style.display = "block";
       img.style.margin = "0 auto 20px auto";
       tempContainer.appendChild(img);
     }
-  }
+  });
 
   // ----------------- GERAR PDF -----------------
   const canvasFinal = await html2canvas(tempContainer, { scale: 2 });
@@ -913,13 +925,102 @@ tempContainer.appendChild(dataAtual);
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF('p', 'pt', 'a4');
   const pageWidth = pdf.internal.pageSize.getWidth();
+
   const imgProps = pdf.getImageProperties(imgFinal);
   const pdfWidth = pageWidth - 40;
   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
   pdf.addImage(imgFinal, 'PNG', 20, 20, pdfWidth, pdfHeight);
-  pdf.save("relatorio_dashboard.pdf");
-
+  pdf.save("relatorio_dashboard_clean.pdf");
+  alert("Documento gerado com sucesso!");
   // Remove container temporário
   document.body.removeChild(tempContainer);
 }
+
+
+let agendamentosChart;
+
+async function carregarAgendamentosComparativo(periodos) {
+  await verificaUsuarioLogado(); // garante Usuario e isSecretaria
+
+  // Busca os agendamentos
+  const res = await fetch('/agendamentos');
+  const data = await res.json();
+
+  // Filtra pelo especialista logado
+  const especialistaLogado = Usuario.toLowerCase();
+  let agendamentosFiltrados = data.filter(a =>
+    a.Especialista &&
+    a.Especialista.toLowerCase().includes(especialistaLogado)
+  );
+
+  // Define meses do período selecionado
+  const hoje = new Date();
+  let meses = [];
+  for (let i = periodos - 1; i >= 0; i--) {
+    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+    meses.push(d);
+  }
+
+  const labels = meses.map(m => `${m.toLocaleString('pt-BR', { month: 'short' })}/${m.getFullYear()}`);
+  const statusTipos = ["Confirmado", "Compareceu", "Aguardando Confirmação", "Cancelado"];
+  const cores = ["#2ecc71", "#3498db", "#f1c40f", "#e74c3c"];
+
+  const datasets = statusTipos.map((status, index) => {
+    const valores = meses.map(m => {
+      const mesStr = m.toISOString().slice(0, 7);
+      return agendamentosFiltrados.filter(a =>
+        a.Data_do_Atendimento.slice(0, 7) === mesStr && a.Status_da_Consulta === status
+      ).length;
+    });
+
+    return {
+      label: status,
+      data: valores,
+      backgroundColor: cores[index],
+      barThickness: 20,  // deixa a barra fina
+      maxBarThickness: 25
+    };
+  });
+
+  const ctx = document.getElementById("agendamentosChart").getContext("2d");
+  if (agendamentosChart) agendamentosChart.destroy();
+
+  agendamentosChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: `Agendamentos por Status - Últimos ${periodos} Meses`
+        },
+        legend: { position: 'bottom' }
+      },
+      scales: {
+        x: {
+          stacked: false,
+          ticks: { maxRotation: 0 },
+          grid: { display: false }
+        },
+        y: {
+          stacked: false,
+          beginAtZero: true,
+          precision: 0
+        }
+      }
+    }
+  });
+}
+
+// Atualiza gráfico ao mudar o select
+document.getElementById("periodoSelect").addEventListener("change", (e) => {
+  const periodos = parseInt(e.target.value);
+  carregarAgendamentosComparativo(periodos);
+});
+
+// Carrega gráfico inicialmente (trimestral)
+carregarAgendamentosComparativo(3);
+
+

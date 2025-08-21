@@ -324,7 +324,20 @@
                     </div>
                 </div>
 
-           
+                <div style="max-width:700px;margin:20px auto;text-align:center;">
+                    <label for="periodoSelect">Comparativo de Agendamentos:</label>
+                    <select id="periodoSelect">
+                        <option value="3">Trimestral</option>
+                        <option value="6">Semestral</option>
+                        <option value="12">Anual</option>
+                    </select>
+
+                    <canvas id="agendamentosChart" style="margin-top:20px;"></canvas>
+                </div>
+
+
+
+
                 <button style="left:12%; top:50px; margin:0; width:28%;" class="botaoFechar"
                     onclick="gerarPDFDashboard()">Gerar Relatório PDF</button>
 
