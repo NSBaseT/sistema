@@ -368,7 +368,7 @@ function parseData(rawData) {
   const dt = new Date(rawData);
   return isNaN(dt) ? null : dt;
 }
-
+ 
 function abrirDashboard() {
   const dashboard = document.getElementById("modal-dashboard");
   dashboard.style.display = "block";
@@ -714,6 +714,33 @@ function carregarDashboard() {
       return res.json();
     })
     .then(data => {
+      //filtro inicio
+       const especialistaLogado = Usuario.toLowerCase();
+
+      const agendamentosFiltrados = data.filter(a => {
+        if (!a.Especialista) return false;
+        const dt = parseData(a.Data_do_Atendimento);
+        if (!dt) return false;
+
+        const isEspecialista = a.Especialista.toLowerCase().includes(especialistaLogado);
+          return isEspecialista;
+      });
+      // filtro final
+      
+      const statusCount = {
+        "Aguardando Confirmação": 0,
+        "Confirmado": 0,
+        "Compareceu": 0,
+        "Cancelado": 0
+      };
+
+      agendamentosFiltrados.forEach(a => {
+        if (statusCount[a.Status_da_Consulta] !== undefined) {
+          statusCount[a.Status_da_Consulta]++;
+        }
+      });
+
+      
       // 3) Filtra por mês se foi selecionado
       if (mesSelecionado) {
         const mesInt = parseInt(mesSelecionado, 10);
@@ -735,15 +762,9 @@ function carregarDashboard() {
           const mesAgendamento = parseInt(monthPart, 10);
           return !isNaN(mesAgendamento) && mesAgendamento === mesInt;
         });
-      }
+      }     
 
-      // 4) Conta cada status
-      const statusCount = {
-        "Aguardando Confirmação": 0,
-        "Confirmado": 0,
-        "Compareceu": 0,
-        "Cancelado": 0
-      };
+
 
       data.forEach(a => {
         const s = a.Status_da_Consulta || "";
