@@ -528,14 +528,25 @@ function abrirDashboardPrincipal() {
 
 
 // ---------------- 1) PACIENTES ----------------
+async function carregarPacientes() {
+  // 🔎 Primeiro garante usuário logado
+  await verificaUsuarioLogado(); 
+
 fetch("/pacientes")
   .then(res => res.json())
-  .then(data => {
+  .then(pacientes => {
+    const pacientesFiltrados = isSecretaria
+        ? pacientes
+        : pacientes.filter(p =>
+            p.Especialista &&
+            p.Especialista.toLowerCase().includes(Usuario.toLowerCase())
+          );
+     
     const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
     const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
-    let totalPacientes = data.length;
+    let totalPacientes = pacientesFiltrados.length;
 
-    data.forEach(paciente => {
+    pacientes.forEach(paciente => {
       const sexo = paciente.Genero || "Outro";
       const idade = parseInt(paciente.Idade) || 0;
 
@@ -547,11 +558,8 @@ fetch("/pacientes")
       else if (idade <= 45) idadeBuckets['31-45']++;
       else if (idade <= 60) idadeBuckets['46-60']++;
       else idadeBuckets['60+']++;
+      
     });
-
-
-
-
 
     document.getElementById("cardTotalPacientes").textContent = totalPacientes;
 
@@ -697,142 +705,102 @@ fetch("/pacientes")
       }
     });
   });
+}
 
+carregarPacientes();
 
 
 
 //filtro....................................................................
-function carregarDashboard() {
-  // 1) Pega o mês selecionado no select
-  const selectMes = document.getElementById("mesFiltroCompacto");
-  const mesSelecionado = selectMes ? selectMes.value : ""; // "" = todos
+async function carregarDashboard() {
+  const filtroMesAno = document.getElementById("filtroMesAno")?.value; // ex.: "2025-08"
 
-  // 2) Busca agendamentos no backend
-  fetch(`/agendamentos`)
-    .then(res => {
-      if (!res.ok) throw new Error('Erro ao buscar agendamentos: ' + res.status);
-      return res.json();
-    })
-    .then(data => {
-      //filtro inicio
-       const especialistaLogado = Usuario.toLowerCase();
+  try {
+    const res = await fetch('/agendamentos');
+    if (!res.ok) throw new Error('Erro ao buscar agendamentos: ' + res.status);
+    const data = await res.json();
 
-      const agendamentosFiltrados = data.filter(a => {
-        if (!a.Especialista) return false;
-        const dt = parseData(a.Data_do_Atendimento);
-        if (!dt) return false;
-
-        const isEspecialista = a.Especialista.toLowerCase().includes(especialistaLogado);
-          return isEspecialista;
-      });
-      // filtro final
-      
-      const statusCount = {
-        "Aguardando Confirmação": 0,
-        "Confirmado": 0,
-        "Compareceu": 0,
-        "Cancelado": 0
-      };
-
-      agendamentosFiltrados.forEach(a => {
-        if (statusCount[a.Status_da_Consulta] !== undefined) {
-          statusCount[a.Status_da_Consulta]++;
-        }
-      });
-
-      
-      // 3) Filtra por mês se foi selecionado
-      if (mesSelecionado) {
-        const mesInt = parseInt(mesSelecionado, 10);
-        data = data.filter(a => {
-          const dateStr = (a.Data_do_Atendimento || "").trim();
-          if (!dateStr) return false;
-
-          let monthPart;
-          if (dateStr.includes('-')) {
-            // Formato YYYY-MM-DD
-            monthPart = dateStr.split('-')[1];
-          } else if (dateStr.includes('/')) {
-            // Formato DD/MM/YYYY
-            monthPart = dateStr.split('/')[1];
-          } else {
-            return false; // formato inválido
-          }
-
-          const mesAgendamento = parseInt(monthPart, 10);
-          return !isNaN(mesAgendamento) && mesAgendamento === mesInt;
-        });
-      }     
-
-
-
-      data.forEach(a => {
-        const s = a.Status_da_Consulta || "";
-        if (statusCount.hasOwnProperty(s)) statusCount[s]++;
-      });
-
-      // 5) Atualiza cards
-      const setText = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-      };
-
-      setText("cardConfirmado", statusCount["Confirmado"] || 0);
-      setText("cardCompareceu", statusCount["Compareceu"] || 0);
-      setText("cardAguardando", statusCount["Aguardando Confirmação"] || 0);
-      setText("cardCancelado", statusCount["Cancelado"] || 0);
-
-      // 6) Monta gráfico de pizza
-      const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
-      const labels = Object.keys(statusCount);
-      const values = labels.map(label =>
-        total > 0 ? ((statusCount[label] / total) * 100).toFixed(1) : 0
-      );
-
-      const canvas = document.getElementById("statusPieChartPrincipal");
-      if (canvas && canvas.getContext) {
-        const ctx = canvas.getContext("2d");
-
-        // Destroi gráfico antigo para evitar sobreposição
-        if (window.statusChartPrincipal) {
-          window.statusChartPrincipal.destroy();
-        }
-
-        // Cria novo gráfico apenas se houver dados
-        if (total > 0) {
-          window.statusChartPrincipal = new Chart(ctx, {
-            type: 'pie',
-            data: {
-              labels: labels.map(label => `${label} (${statusCount[label]})`),
-              datasets: [{
-                data: values,
-                backgroundColor: ['#f39c12', '#2ecc71', '#3498db', '#e74c3c']
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                  callbacks: {
-                    label: (tooltipItem) => {
-                      const label = tooltipItem.label;
-                      const value = tooltipItem.raw;
-                      return `${label}: ${value}%`;
-                    }
-                  }
-                },
-                title: { display: true, text: 'Distribuição dos Agendamentos' }
-              }
-            }
-          });
-        }
-      }
-    })
-    .catch(err => {
-      console.error("Erro carregarDashboard -> agendamentos:", err);
+    // 1) Filtra pelo especialista logado
+    const especialistaLogado = Usuario.toLowerCase();
+    let agendamentosFiltrados = data.filter(a => {
+      if (!a.Especialista || !a.Data_do_Atendimento) return false;
+      return a.Especialista.toLowerCase().includes(especialistaLogado);
     });
+
+    // 2) Filtra pelo mês/ano selecionado (YYYY-MM)
+    if (filtroMesAno) {
+      agendamentosFiltrados = agendamentosFiltrados.filter(a => {
+        const dataItem = a.Data_do_Atendimento.slice(0,7); // pega "YYYY-MM"
+        return dataItem === filtroMesAno;
+      });
+    }
+
+    // 3) Conta status
+    const statusCount = {
+      "Aguardando Confirmação": 0,
+      "Confirmado": 0,
+      "Compareceu": 0,
+      "Cancelado": 0
+    };
+
+    agendamentosFiltrados.forEach(a => {
+      if (statusCount[a.Status_da_Consulta] !== undefined) {
+        statusCount[a.Status_da_Consulta]++;
+      }
+    });
+
+    // 4) Atualiza cards
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText("cardConfirmado", statusCount["Confirmado"] || 0);
+    setText("cardCompareceu", statusCount["Compareceu"] || 0);
+    setText("cardAguardando", statusCount["Aguardando Confirmação"] || 0);
+    setText("cardCancelado", statusCount["Cancelado"] || 0);
+
+    // 5) Atualiza gráfico
+    const total = Object.values(statusCount).reduce((a,b) => a+b, 0);
+    const labels = Object.keys(statusCount);
+    const values = labels.map(label =>
+      total > 0 ? ((statusCount[label]/total)*100).toFixed(1) : 0
+    );
+
+    const canvas = document.getElementById("statusPieChartPrincipal");
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext("2d");
+
+      if (window.statusChartPrincipal) window.statusChartPrincipal.destroy();
+
+      if (total > 0) {
+        window.statusChartPrincipal = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels.map(label => `${label} (${statusCount[label]})`),
+            datasets: [{ data: values, backgroundColor: ['#f39c12','#2ecc71','#3498db','#e74c3c'] }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}%`
+                }
+              },
+              title: { display: true, text: 'Distribuição dos Agendamentos' }
+            }
+          }
+        });
+      }
+    }
+
+  } catch(err) {
+    console.error("Erro carregarDashboard -> agendamentos:", err);
+  }
 }
+
 
 // 7) Fecha dashboard
 function fecharDashboardPrincipal() {

@@ -212,7 +212,7 @@
             <i class="bi bi-chat-dots"></i>
         </button>
 
- <!-- Container compacto para aniversariantes do dia -->
+        <!-- Container compacto para aniversariantes do dia -->
         <div id="modal-aniversariantes" class="modal-aniversariantes">
             <h3 style="text-align: center; margin-top: 0;">🎉 Aniversariantes do Dia</h3>
             <ul id="lista-aniversariantes"
@@ -228,7 +228,7 @@
         </div>
 
 
-       
+
 
         <div id="modal-dashboard-principal" class="modal-dashboard-principal">
             <h3 style="color:darkcyan; font-size:xx-large; position:relative; text-align: center; top:-2px;">📈
@@ -238,23 +238,10 @@
             </div>
 
             <div style="text-align: center; margin-bottom: 10px;">
-                <label for="mesFiltroCompacto"><strong>Filtrar por mês:</strong></label>
-                <select id="mesFiltroCompacto" onchange="carregarDashboard()">
-                    <option value="">Todos</option>
-                    <option value="1">Janeiro</option>
-                    <option value="2">Fevereiro</option>
-                    <option value="3">Março</option>
-                    <option value="4">Abril</option>
-                    <option value="5">Maio</option>
-                    <option value="6">Junho</option>
-                    <option value="7">Julho</option>
-                    <option value="8">Agosto</option>
-                    <option value="9">Setembro</option>
-                    <option value="10">Outubro</option>
-                    <option value="11">Novembro</option>
-                    <option value="12">Dezembro</option>
-                </select>
+                <label for="filtroMesAno"><strong>Filtrar por mês/ano:</strong></label>
+                <input type="month" id="filtroMesAno" onchange="carregarDashboard()">
             </div>
+
 
             <!-- Seção de Agendamentos -->
             <div class="dashboard-section">
@@ -301,7 +288,7 @@
                 <!-- Seção de Pacientes -->
                 <div class="dashboard-section">
                     <h3 class="dashprincipal">Pacientes Cadastrados</h3> <br>
-                    
+
                     <div>
                         <div id="cardTotalPacientes" class="card"
                             style="background-color:#81cee7; position: relative; width:10%; height:2%; left:46% !important;">
@@ -311,7 +298,7 @@
                         <!-- Linha 1 - Títulos -->
                         <p>Comparativo por Sexo:</p>
                         <p>Comparativo por Idade: <br>
-                        Faixa Etária mais comum:</p>
+                            Faixa Etária mais comum:</p>
                     </div>
                     <!-- Linha 2 - Cards principais -->
                     <div class="paciente-cards">
@@ -322,14 +309,14 @@
                         </div>
 
                         <div class="card" id="cardIdadeComparativo" style="background-color:#81cee7;">
-                            
+
                         </div>
                     </div>
 
                     <div class="paciente-cards">
-                        <div class="card" style="background-color: white; box-shadow: none;"
-                            id="cardSexoComparativo1">
-                            <div id="grafico-barras-sexo" class="grafico-barras-sexo" style="position:relative; left: -2% !important;"></div>
+                        <div class="card" style="background-color: white; box-shadow: none;" id="cardSexoComparativo1">
+                            <div id="grafico-barras-sexo" class="grafico-barras-sexo"
+                                style="position:relative; left: -2% !important;"></div>
                         </div>
                         <div id="barraContainer" style="display: flex; flex-direction: column; gap: 8px;">
                             <!-- Barras serão inseridas aqui -->
