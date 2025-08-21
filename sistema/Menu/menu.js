@@ -333,24 +333,24 @@ Usuario = "";
 Nome = "";
 
 async function verificaUsuarioLogado() {
-    const token = localStorage.getItem(CHAVE);
-    const response = await fetch('/verify', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token })
-    });
-    if (!response.ok) throw new Error("Falha na autenticação");
-    const data = await response.json();
+  const token = localStorage.getItem(CHAVE);
+  const response = await fetch('/verify', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token })
+  });
+  if (!response.ok) throw new Error("Falha na autenticação");
+  const data = await response.json();
 
-    if (data.Secretaria) {
-        isSecretaria = true; // importante: seta a flag global
-        Usuario = null;
-        Nome = null;
-    } else {
-        isSecretaria = false;
-        Usuario = data.Usuario;
-        Nome = data.Nome;
-    }
+  if (data.Secretaria) {
+    isSecretaria = true; // importante: seta a flag global
+    Usuario = null;
+    Nome = null;
+  } else {
+    isSecretaria = false;
+    Usuario = data.Usuario;
+    Nome = data.Nome;
+  }
 }
 
 function parseData(rawData) {
@@ -368,7 +368,7 @@ function parseData(rawData) {
   const dt = new Date(rawData);
   return isNaN(dt) ? null : dt;
 }
- 
+
 function abrirDashboard() {
   const dashboard = document.getElementById("modal-dashboard");
   dashboard.style.display = "block";
@@ -457,45 +457,45 @@ function abrirDashboard() {
 }
 
 function abrirAniversariantes() {
-    const aniversarianteBox = document.getElementById("modal-aniversariantes");
-    aniversarianteBox.style.display = "block";
+  const aniversarianteBox = document.getElementById("modal-aniversariantes");
+  aniversarianteBox.style.display = "block";
 
-    fetch("/pacientes")
-        .then(res => res.json())
-        .then(pacientes => {
-            // Se for secretária, pega todos os pacientes
-            const pacientesFiltrados = isSecretaria
-                ? pacientes
-                : pacientes.filter(p => p.Especialista && p.Especialista.toLowerCase() === Usuario.toLowerCase());
+  fetch("/pacientes")
+    .then(res => res.json())
+    .then(pacientes => {
+      // Se for secretária, pega todos os pacientes
+      const pacientesFiltrados = isSecretaria
+        ? pacientes
+        : pacientes.filter(p => p.Especialista && p.Especialista.toLowerCase() === Usuario.toLowerCase());
 
-            const hoje = new Date();
-            const diaHoje = hoje.getDate();
-            const mesHoje = hoje.getMonth() + 1;
+      const hoje = new Date();
+      const diaHoje = hoje.getDate();
+      const mesHoje = hoje.getMonth() + 1;
 
-            const aniversariantes = pacientesFiltrados.filter(p => {
-                if (!p.Data_de_Nascimento) return false;
-                const [ano, mes, dia] = p.Data_de_Nascimento.split("-");
-                return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
-            });
+      const aniversariantes = pacientesFiltrados.filter(p => {
+        if (!p.Data_de_Nascimento) return false;
+        const [ano, mes, dia] = p.Data_de_Nascimento.split("-");
+        return parseInt(dia) === diaHoje && parseInt(mes) === mesHoje;
+      });
 
-            const lista = document.getElementById("lista-aniversariantes");
-            lista.innerHTML = "";
+      const lista = document.getElementById("lista-aniversariantes");
+      lista.innerHTML = "";
 
-            if (aniversariantes.length > 0) {
-                aniversariantes.forEach(p => {
-                    const item = document.createElement("li");
-                    item.textContent = isSecretaria
-                        ? `🎂 ${p.Nome} (${p.Idade} anos) — Espec.: ${p.Especialista}`
-                        : `🎂 ${p.Nome} (${p.Idade} anos)`;
-                    lista.appendChild(item);
-                });
-            } else {
-                const item = document.createElement("li");
-                item.textContent = "Nenhum aniversariante hoje 💤";
-                lista.appendChild(item);
-            }
-        })
-        .catch(err => console.error("Erro ao carregar pacientes:", err));
+      if (aniversariantes.length > 0) {
+        aniversariantes.forEach(p => {
+          const item = document.createElement("li");
+          item.textContent = isSecretaria
+            ? `🎂 ${p.Nome} (${p.Idade} anos) — Espec.: ${p.Especialista}`
+            : `🎂 ${p.Nome} (${p.Idade} anos)`;
+          lista.appendChild(item);
+        });
+      } else {
+        const item = document.createElement("li");
+        item.textContent = "Nenhum aniversariante hoje 💤";
+        lista.appendChild(item);
+      }
+    })
+    .catch(err => console.error("Erro ao carregar pacientes:", err));
 }
 
 async function iniciarDashboard() {
@@ -530,48 +530,48 @@ function abrirDashboardPrincipal() {
 // ---------------- 1) PACIENTES ----------------
 async function carregarPacientes() {
   // 🔎 Primeiro garante usuário logado
-  await verificaUsuarioLogado(); 
+  await verificaUsuarioLogado();
 
-fetch("/pacientes")
-  .then(res => res.json())
-  .then(pacientes => {
-    const pacientesFiltrados = isSecretaria
+  fetch("/pacientes")
+    .then(res => res.json())
+    .then(pacientes => {
+      const pacientesFiltrados = isSecretaria
         ? pacientes
         : pacientes.filter(p =>
-            p.Especialista &&
-            p.Especialista.toLowerCase().includes(Usuario.toLowerCase())
-          );
-     
-    const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
-    const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
-    let totalPacientes = pacientesFiltrados.length;
+          p.Especialista &&
+          p.Especialista.toLowerCase().includes(Usuario.toLowerCase())
+        );
 
-    pacientes.forEach(paciente => {
-      const sexo = paciente.Genero || "Outro";
-      const idade = parseInt(paciente.Idade) || 0;
+      const sexoCount = { Masculino: 0, Feminino: 0, Outro: 0 };
+      const idadeBuckets = { '0-18': 0, '19-30': 0, '31-45': 0, '46-60': 0, '60+': 0 };
+      let totalPacientes = pacientesFiltrados.length;
 
-      if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
-      else sexoCount["Outro"]++;
+      pacientes.forEach(paciente => {
+        const sexo = paciente.Genero || "Outro";
+        const idade = parseInt(paciente.Idade) || 0;
 
-      if (idade <= 18) idadeBuckets['0-18']++;
-      else if (idade <= 30) idadeBuckets['19-30']++;
-      else if (idade <= 45) idadeBuckets['31-45']++;
-      else if (idade <= 60) idadeBuckets['46-60']++;
-      else idadeBuckets['60+']++;
-      
-    });
+        if (sexoCount[sexo] !== undefined) sexoCount[sexo]++;
+        else sexoCount["Outro"]++;
 
-    document.getElementById("cardTotalPacientes").textContent = totalPacientes;
+        if (idade <= 18) idadeBuckets['0-18']++;
+        else if (idade <= 30) idadeBuckets['19-30']++;
+        else if (idade <= 45) idadeBuckets['31-45']++;
+        else if (idade <= 60) idadeBuckets['46-60']++;
+        else idadeBuckets['60+']++;
 
-    const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
-    const percMasc = totalSexo ? parseFloat(((sexoCount.Masculino / totalSexo) * 100).toFixed(1)) : 0;
-    const percFem = totalSexo ? parseFloat(((sexoCount.Feminino / totalSexo) * 100).toFixed(1)) : 0;
-    const percOutro = totalSexo ? parseFloat(((sexoCount.Outro / totalSexo) * 100).toFixed(1)) : 0;
-    const alturaMasc = percMasc * 2; // 5px por unidade percentual
-    const alturaFem = percFem * 2;
-    const alturaOutro = percOutro * 2;
+      });
 
-    document.getElementById("cardSexoComparativo").innerHTML = `
+      document.getElementById("cardTotalPacientes").textContent = totalPacientes;
+
+      const totalSexo = sexoCount.Masculino + sexoCount.Feminino + sexoCount.Outro;
+      const percMasc = totalSexo ? parseFloat(((sexoCount.Masculino / totalSexo) * 100).toFixed(1)) : 0;
+      const percFem = totalSexo ? parseFloat(((sexoCount.Feminino / totalSexo) * 100).toFixed(1)) : 0;
+      const percOutro = totalSexo ? parseFloat(((sexoCount.Outro / totalSexo) * 100).toFixed(1)) : 0;
+      const alturaMasc = percMasc * 2; // 5px por unidade percentual
+      const alturaFem = percFem * 2;
+      const alturaOutro = percOutro * 2;
+
+      document.getElementById("cardSexoComparativo").innerHTML = `
   <div class="sexo-item has-tooltip" title="Masculino">
     <span class="icon">👦</span> ${percMasc}%
   </div>
@@ -584,9 +584,9 @@ fetch("/pacientes")
 `;
 
 
-    const grafico = document.getElementById("grafico-barras-sexo");
+      const grafico = document.getElementById("grafico-barras-sexo");
 
-    grafico.innerHTML = `
+      grafico.innerHTML = `
         <div style="display:flex;flex-direction:column;align-items:center;">
           <div class="barra masculino" style="height:${alturaMasc}px">
             <span class="porcentagem-label">${percMasc}%</span>
@@ -607,104 +607,104 @@ fetch("/pacientes")
         </div>
       `;
 
-    // Faixa etária mais comum
-    const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-    document.getElementById("cardIdadeComparativo").innerHTML =
-      `${idadePredominante}`;
-    atualizarGrafico(idadeBuckets);
-
-
-    function atualizarGrafico(idadeBuckets) {
+      // Faixa etária mais comum
       const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-      document.getElementById("cardIdadeComparativo").textContent = idadePredominante;
-
-      const barraContainer = document.getElementById("barraContainer");
-      barraContainer.innerHTML = '';
-
-      const maxValor = Math.max(...Object.values(idadeBuckets));
-
-      Object.entries(idadeBuckets).forEach(([faixa, valor]) => {
-        const barraWrapper = document.createElement("div");
-        barraWrapper.style.display = "flex";
-        barraWrapper.style.alignItems = "center";
-        barraWrapper.style.gap = "20px";
-
-        // Label faixa etária (fixo largura)
-        const label = document.createElement("div");
-        label.style.width = "120px";
-        label.style.fontWeight = "600";
-        label.textContent = faixa;
-
-        // Barra - flexível, cresce de acordo com o valor
-        const barra = document.createElement("div");
-        barra.style.height = "20px";
-        barra.style.backgroundColor = "#f89c23ff";
-        barra.style.borderRadius = "8px";
-        const larguraPercentual = (valor / maxValor) * 100;
-        barra.style.width = larguraPercentual + "%";
-        barra.style.minWidth = valor > 0 ? "35px" : "0"; //       // não ultrapassa o container
+      document.getElementById("cardIdadeComparativo").innerHTML =
+        `${idadePredominante}`;
+      atualizarGrafico(idadeBuckets);
 
 
-        // Valor numérico (fixo largura)
-        const valorLabel = document.createElement("div");
-        valorLabel.style.width = "20px";
-        valorLabel.style.fontWeight = "700";
-        valorLabel.textContent = valor;
+      function atualizarGrafico(idadeBuckets) {
+        const idadePredominante = Object.entries(idadeBuckets).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+        document.getElementById("cardIdadeComparativo").textContent = idadePredominante;
 
-        barraWrapper.appendChild(label);
-        barraWrapper.appendChild(barra);
-        barraWrapper.appendChild(valorLabel);
+        const barraContainer = document.getElementById("barraContainer");
+        barraContainer.innerHTML = '';
 
-        barraContainer.appendChild(barraWrapper);
+        const maxValor = Math.max(...Object.values(idadeBuckets));
+
+        Object.entries(idadeBuckets).forEach(([faixa, valor]) => {
+          const barraWrapper = document.createElement("div");
+          barraWrapper.style.display = "flex";
+          barraWrapper.style.alignItems = "center";
+          barraWrapper.style.gap = "20px";
+
+          // Label faixa etária (fixo largura)
+          const label = document.createElement("div");
+          label.style.width = "120px";
+          label.style.fontWeight = "600";
+          label.textContent = faixa;
+
+          // Barra - flexível, cresce de acordo com o valor
+          const barra = document.createElement("div");
+          barra.style.height = "20px";
+          barra.style.backgroundColor = "#f89c23ff";
+          barra.style.borderRadius = "8px";
+          const larguraPercentual = (valor / maxValor) * 100;
+          barra.style.width = larguraPercentual + "%";
+          barra.style.minWidth = valor > 0 ? "35px" : "0"; //       // não ultrapassa o container
+
+
+          // Valor numérico (fixo largura)
+          const valorLabel = document.createElement("div");
+          valorLabel.style.width = "20px";
+          valorLabel.style.fontWeight = "700";
+          valorLabel.textContent = valor;
+
+          barraWrapper.appendChild(label);
+          barraWrapper.appendChild(barra);
+          barraWrapper.appendChild(valorLabel);
+
+          barraContainer.appendChild(barraWrapper);
+        });
+
+      }
+
+
+
+      // Gráfico sexo
+      const sexoCtx = document.getElementById("sexoChart").getContext("2d");
+      if (window.sexoChart) window.sexoChart.destroy();
+      window.sexoChart = new Chart(sexoCtx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(sexoCount),
+          datasets: [{
+            data: Object.values(sexoCount),
+            backgroundColor: ['#3498db', '#e74c3c', '#9b59b6']
+          }]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: 'Distribuição por Sexo' },
+            legend: { position: 'bottom' }
+          }
+        }
       });
 
-    }
-
-
-
-    // Gráfico sexo
-    const sexoCtx = document.getElementById("sexoChart").getContext("2d");
-    if (window.sexoChart) window.sexoChart.destroy();
-    window.sexoChart = new Chart(sexoCtx, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(sexoCount),
-        datasets: [{
-          data: Object.values(sexoCount),
-          backgroundColor: ['#3498db', '#e74c3c', '#9b59b6']
-        }]
-      },
-      options: {
-        plugins: {
-          title: { display: true, text: 'Distribuição por Sexo' },
-          legend: { position: 'bottom' }
-        }
-      }
-    });
-
-    // Gráfico idade
-    const idadeCtx = document.getElementById("idadeChart").getContext("2d");
-    if (window.idadeChart) window.idadeChart.destroy();
-    window.idadeChart = new Chart(idadeCtx, {
-      type: 'bar',
-      data: {
-        labels: Object.keys(idadeBuckets),
-        datasets: [{
-          label: 'Pacientes',
-          data: Object.values(idadeBuckets),
-          backgroundColor: '#2ecc71'
-        }]
-      },
-      options: {
-        plugins: {
-          title: { display: true, text: 'Distribuição por Faixa Etária' }
+      // Gráfico idade
+      const idadeCtx = document.getElementById("idadeChart").getContext("2d");
+      if (window.idadeChart) window.idadeChart.destroy();
+      window.idadeChart = new Chart(idadeCtx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(idadeBuckets),
+          datasets: [{
+            label: 'Pacientes',
+            data: Object.values(idadeBuckets),
+            backgroundColor: '#2ecc71'
+          }]
         },
-        scales: {
-          y: { beginAtZero: true }
+        options: {
+          plugins: {
+            title: { display: true, text: 'Distribuição por Faixa Etária' }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
         }
-      }
+      });
     });
-  });
 }
 
 carregarPacientes();
@@ -730,7 +730,7 @@ async function carregarDashboard() {
     // 2) Filtra pelo mês/ano selecionado (YYYY-MM)
     if (filtroMesAno) {
       agendamentosFiltrados = agendamentosFiltrados.filter(a => {
-        const dataItem = a.Data_do_Atendimento.slice(0,7); // pega "YYYY-MM"
+        const dataItem = a.Data_do_Atendimento.slice(0, 7); // pega "YYYY-MM"
         return dataItem === filtroMesAno;
       });
     }
@@ -761,10 +761,10 @@ async function carregarDashboard() {
     setText("cardCancelado", statusCount["Cancelado"] || 0);
 
     // 5) Atualiza gráfico
-    const total = Object.values(statusCount).reduce((a,b) => a+b, 0);
+    const total = Object.values(statusCount).reduce((a, b) => a + b, 0);
     const labels = Object.keys(statusCount);
     const values = labels.map(label =>
-      total > 0 ? ((statusCount[label]/total)*100).toFixed(1) : 0
+      total > 0 ? ((statusCount[label] / total) * 100).toFixed(1) : 0
     );
 
     const canvas = document.getElementById("statusPieChartPrincipal");
@@ -778,7 +778,7 @@ async function carregarDashboard() {
           type: 'pie',
           data: {
             labels: labels.map(label => `${label} (${statusCount[label]})`),
-            datasets: [{ data: values, backgroundColor: ['#f39c12','#2ecc71','#3498db','#e74c3c'] }]
+            datasets: [{ data: values, backgroundColor: ['#f39c12', '#2ecc71', '#3498db', '#e74c3c'] }]
           },
           options: {
             responsive: true,
@@ -796,7 +796,7 @@ async function carregarDashboard() {
       }
     }
 
-  } catch(err) {
+  } catch (err) {
     console.error("Erro carregarDashboard -> agendamentos:", err);
   }
 }
@@ -816,3 +816,110 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   carregarDashboard(); // carrega inicialmente
 });
+
+async function gerarPDFDashboard() {
+  await verificaUsuarioLogado(); // garante Usuario e isSecretaria
+
+  // Cria container temporário invisível
+  const tempContainer = document.createElement("div");
+  tempContainer.style.position = "absolute";
+  tempContainer.style.left = "-9999px"; // fora da tela
+  tempContainer.style.width = "800px";
+  tempContainer.style.background = "#fff";
+  tempContainer.style.padding = "20px";
+  tempContainer.style.boxSizing = "border-box";
+  document.body.appendChild(tempContainer);
+
+  // Título e data
+  const titulo = document.createElement("h2");
+  titulo.textContent = "Relatório Resumido do Dashboard";
+  titulo.style.textAlign = "center";
+  tempContainer.appendChild(titulo);
+
+  const dataAtual = document.createElement("p");
+dataAtual.textContent = "Dr.(a) " + Usuario + " - " + new Date().toLocaleDateString();
+dataAtual.style.textAlign = "center";
+dataAtual.style.marginBottom = "20px";
+tempContainer.appendChild(dataAtual);
+
+
+  // ----------------- TABELA RESUMO -----------------
+  const tabela = document.createElement("table");
+  tabela.style.width = "100%";
+  tabela.style.borderCollapse = "collapse";
+  tabela.style.marginBottom = "20px";
+
+  const addRow = (label, value) => {
+    const tr = document.createElement("tr");
+
+    const tdLabel = document.createElement("td");
+    tdLabel.textContent = label;
+    tdLabel.style.border = "1px solid #000";
+    tdLabel.style.padding = "6px";
+    tdLabel.style.fontWeight = "600";
+
+    const tdValue = document.createElement("td");
+    tdValue.textContent = value;
+    tdValue.style.border = "1px solid #000";
+    tdValue.style.padding = "6px";
+
+    tr.appendChild(tdLabel);
+    tr.appendChild(tdValue);
+    tabela.appendChild(tr);
+  };
+
+  // Valores do dashboard
+  const totalPacientes = document.getElementById("cardTotalPacientes")?.textContent || "0";
+  const sexoComparativo = document.getElementById("cardSexoComparativo")?.textContent || "";
+  const idadePredominante = document.getElementById("cardIdadeComparativo")?.textContent || "";
+
+  const cardConfirmado = document.getElementById("cardConfirmado")?.textContent || "0";
+  const cardCompareceu = document.getElementById("cardCompareceu")?.textContent || "0";
+  const cardAguardando = document.getElementById("cardAguardando")?.textContent || "0";
+  const cardCancelado = document.getElementById("cardCancelado")?.textContent || "0";
+
+  addRow("Total de Pacientes", totalPacientes);
+  addRow("Distribuição por Sexo", sexoComparativo);
+  addRow("Faixa Etária Predominante", idadePredominante);
+  addRow("Agendamentos Confirmados", cardConfirmado);
+  addRow("Agendamentos Compareceu", cardCompareceu);
+  addRow("Agendamentos Aguardando Confirmação", cardAguardando);
+  addRow("Agendamentos Cancelados", cardCancelado);
+
+  tempContainer.appendChild(tabela);
+
+  // ----------------- GRÁFICOS PIZZA -----------------
+  const canvasList = [
+    document.getElementById("sexoChart"),
+    document.getElementById("statusPieChartPrincipal") // supondo que você tenha esse canvas
+  ];
+
+  for (let canvas of canvasList) {
+    if (canvas) {
+      const imgData = canvas.toDataURL("image/png");
+      const img = document.createElement("img");
+      img.src = imgData;
+      img.style.width = "350px";
+      img.style.display = "block";
+      img.style.margin = "0 auto 20px auto";
+      tempContainer.appendChild(img);
+    }
+  }
+
+  // ----------------- GERAR PDF -----------------
+  const canvasFinal = await html2canvas(tempContainer, { scale: 2 });
+  const imgFinal = canvasFinal.toDataURL("image/png");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'pt', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const imgProps = pdf.getImageProperties(imgFinal);
+  const pdfWidth = pageWidth - 40;
+  const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  pdf.addImage(imgFinal, 'PNG', 20, 20, pdfWidth, pdfHeight);
+  pdf.save("relatorio_dashboard.pdf");
+
+  // Remove container temporário
+  document.body.removeChild(tempContainer);
+}
